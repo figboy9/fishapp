@@ -58,4 +58,8 @@ jobs:
 workflows:
   update-manifest:
     jobs:
-      - update-manifest
+      - update-manifest:
+          filters:
+            branches:
+              only:
+                - master
