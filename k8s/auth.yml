@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+spec:
+  type: NodePort
+  ports:
+    - name: "http-port"
+      protocol: "TCP"
+      port: 9000
+      targetPort: 80
+  selector:
+    app: auth
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deployment
+  labels:
+    app: auth
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+      - name: nginx
+        image: fishapp_auth_nginx
+        ports:
+        - containerPort: 80
+      - name: auth
+        image: fishapp_auth
+        ports:
+        - containerPort: 9000
+        env:
+          - name: JWT_KEY
+            valueFrom:
+                secretKeyRef:
+                  name: fishapp-secret
+                  key: jwtkey
+          - name: EXP_SEC
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-configmap
+                  key: idToken.exp.sec
+          - name: RT_EXP_SEC
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-configmap
+                  key: rtToken.exp.sec

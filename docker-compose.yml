@@ -1,0 +1,42 @@
+version: '3'
+services:
+  auth-db:
+    image: mysql:8.0.17
+    volumes:
+      - "auth-data:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: auth_DB
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "4306:3306"
+
+  client:
+    image: node:12.13.0-alpine
+    working_dir: /app
+    volumes:
+      - ./client:/app
+    environment:
+      HOST: 0.0.0.0
+    ports:
+      - "3000:3000"
+    command: /bin/sh -c "yarn && yarn dev"
+    env_file:
+      - .env_client
+
+  auth:
+    build:
+      context: ./server/auth
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./server/auth:/app
+    ports:
+      - 9000:9000
+    depends_on:
+      - auth-db
+    env_file:
+      - .env_auth
+
+volumes:
+  auth-data:
+    driver: local

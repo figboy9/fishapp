@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: client
+spec:
+  type: NodePort
+  ports:
+    - name: "http-port"
+      protocol: "TCP"
+      port: 8080
+      targetPort: 80
+  selector:
+    app: client
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+  labels:
+    app: client
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      volumes:
+        - name: assets
+          emptyDir: {}
+      containers:
+      - name: nginx
+        image: fishapp_client_nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: /_nuxt
+            name: assets
+      - name: nuxt
+        image: fishapp_client_nuxt
+        env:
+          - name: EXP_SEC
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-configmap
+                  key: idToken.exp.sec
+          - name: RT_EXP_SEC
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-configmap
+                  key: rtToken.exp.sec
+        lifecycle:
+            postStart:
+              exec:
+                command:
+                  - cp
+                  - -R
+                  - /app/.nuxt/dist/client
+                  - /
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+          - mountPath: /client
+            name: assets

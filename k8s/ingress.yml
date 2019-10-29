@@ -1,0 +1,18 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: fishapp-ip
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api/auth/*
+        backend:
+          serviceName: auth
+          servicePort: 9000
+      - path: /*
+        backend:
+          serviceName: client
+          servicePort: 8080

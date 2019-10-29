@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fishapp-configmap
+data:
+  idToken.exp.sec: "3600"
+  rtToken.exp.sec: "864000"
