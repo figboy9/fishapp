@@ -18,9 +18,10 @@ jobs:
             apiVersion: kustomize.config.k8s.io/v1beta1
             kind: Kustomization
             secretGenerator:
-            - name: fishapp-secret
+            - name: fishapp-authapi
               literals:
               - jwtkey=${JWT_KEY}
+              - db.pass=${DB_PASS}
             EOF
       - run:
           name: update-manifest
@@ -58,6 +59,7 @@ jobs:
 workflows:
   update-manifest:
     jobs:
+      
       - update-manifest:
           filters:
             branches:
