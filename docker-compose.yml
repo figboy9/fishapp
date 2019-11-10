@@ -4,12 +4,11 @@ services:
     image: mysql:8.0.17
     volumes:
       - "auth-data:/var/lib/mysql"
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: auth_DB
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "4306:3306"
+    env_file:
+      - .env_auth_db
 
   client:
     image: node:12.13.0-alpine
@@ -37,6 +36,19 @@ services:
     env_file:
       - .env_auth
 
+  # post:
+  #   build:
+  #     context: ./server/post
+  #     dockerfile: Dockerfile.dev
+  #   volumes:
+  #     - ./server/post:/app
+  #   ports:
+  #     - 8000:9000
+  #   tty: true
+    # depends_on:
+    #   - auth-db
+    # env_file:
+    #   - .env_post
 volumes:
   auth-data:
     driver: local
