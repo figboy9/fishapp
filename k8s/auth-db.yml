@@ -37,10 +37,26 @@ spec:
         ports:
         - containerPort: 3306
         env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: password
-        - name: MYSQL_DATABASE
-          value: auth_DB
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+                secretKeyRef:
+                  name: fishapp-authapi
+                  key: db.pass
+          - name: MYSQL_DATABASE
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.name
+          - name: TZ
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.tz
+          - name: MYSQL_TCP_PORT
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.port
         volumeMounts:
         - name: auth-data
           mountPath: /var/lib/mysql
