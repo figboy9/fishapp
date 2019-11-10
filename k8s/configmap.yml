@@ -5,3 +5,4 @@ metadata:
 data:
   idToken.exp.sec: "3600"
   rtToken.exp.sec: "864000"
+  client.url: "http://35.244.200.192"
