@@ -41,15 +41,49 @@ spec:
           - name: JWT_KEY
             valueFrom:
                 secretKeyRef:
-                  name: fishapp-secret
+                  name: fishapp-authapi
                   key: jwtkey
-          - name: EXP_SEC
+          - name: PORT
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-configmap
-                  key: idToken.exp.sec
-          - name: RT_EXP_SEC
+                  name: fishapp-authapi
+                  key: gin.port
+          - name: CLIENT_URL
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-configmap
-                  key: rtToken.exp.sec
+                  name: fishapp-authapi
+                  key: client.url
+          - name: DB_PASS
+            valueFrom:
+                secretKeyRef:
+                  name: fishapp-authapi
+                  key: db.pass
+          - name: DB_DBMS
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.dbms
+          - name: DB_USER
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.user
+          - name: DB_NAME
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.name
+          - name: DB_PORT
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.port
+          - name: DB_HOST
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: db.host
+
+        envFrom:
+          - configMapRef:
+              name: fishapp-auth
