@@ -50,7 +50,7 @@ jobs:
             - auth.yml
             - auth-db.yml
             - client.yml
-            - configmap.yml
+            - authapi-config.yml
             - ingress.yml
             - ssd-storageclass.yml
             EOF
