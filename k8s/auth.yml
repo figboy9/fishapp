@@ -48,6 +48,11 @@ spec:
                 configMapKeyRef:
                   name: fishapp-authapi
                   key: gin.port
+          - name: GIN_MODE
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: gin.mode
           - name: CLIENT_URL
             valueFrom:
                 configMapKeyRef:
