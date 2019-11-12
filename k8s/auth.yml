@@ -83,7 +83,3 @@ spec:
                 configMapKeyRef:
                   name: fishapp-authapi
                   key: db.host
-
-        envFrom:
-          - configMapRef:
-              name: fishapp-auth
