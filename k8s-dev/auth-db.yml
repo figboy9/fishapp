@@ -18,6 +18,7 @@ metadata:
   name: auth-db
   labels:
     app: auth-db
+  
 spec:
   serviceName: auth-db
   selector:
@@ -60,12 +61,7 @@ spec:
         volumeMounts:
         - name: auth-data
           mountPath: /var/lib/mysql
-  volumeClaimTemplates:
-  - metadata:
-      name: auth-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ssd
-      resources:
-        requests:
-          storage: 4Gi
+      volumes:
+      - name: auth-data
+        persistentVolumeClaim:
+          claimName: local-claim

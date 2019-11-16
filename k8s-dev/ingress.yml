@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   name: ingress
   annotations:
-    kubernetes.io/ingress.global-static-ip-name: fishapp-ip
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
   - http:
