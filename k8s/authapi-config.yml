@@ -11,6 +11,6 @@ data:
   db.port: "3306"
   db.host: "auth-db"
   local.tz: "Asia/Tokyo"
-  gin.port: "9000"
+  gin.port: "8080"
   gin.mode: "release"
   client.url: "http://35.244.200.192"

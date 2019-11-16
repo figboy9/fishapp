@@ -7,7 +7,7 @@ spec:
   ports:
     - name: "http-port"
       protocol: "TCP"
-      port: 9000
+      port: 8080
       targetPort: 80
   selector:
     app: auth
@@ -36,7 +36,7 @@ spec:
       - name: auth
         image: fishapp_auth
         ports:
-        - containerPort: 9000
+        - containerPort: 8080
         env:
           - name: JWT_KEY
             valueFrom:

@@ -11,7 +11,7 @@ spec:
       - path: /api/auth/*
         backend:
           serviceName: auth
-          servicePort: 9000
+          servicePort: 8080
       - path: /*
         backend:
           serviceName: client
