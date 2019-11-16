@@ -58,6 +58,16 @@ spec:
                 configMapKeyRef:
                   name: fishapp-authapi
                   key: client.url
+          - name: EXP_SEC
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: idToken.exp.sec
+          - name: RT_EXP_SEC
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: rtToken.exp.sec
           - name: TZ
             valueFrom:
                 configMapKeyRef:
