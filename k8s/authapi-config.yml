@@ -10,7 +10,7 @@ data:
   db.name: "auth_DB"
   db.port: "3306"
   db.host: "auth-db"
-  db.tz: "Asia/Tokyo"
+  local.tz: "Asia/Tokyo"
   gin.port: "9000"
   gin.mode: "release"
   client.url: "http://35.244.200.192"

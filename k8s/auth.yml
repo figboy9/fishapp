@@ -58,6 +58,11 @@ spec:
                 configMapKeyRef:
                   name: fishapp-authapi
                   key: client.url
+          - name: TZ
+            valueFrom:
+                configMapKeyRef:
+                  name: fishapp-authapi
+                  key: local.tz
           - name: DB_PASS
             valueFrom:
                 secretKeyRef:

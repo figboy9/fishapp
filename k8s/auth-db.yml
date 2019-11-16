@@ -51,7 +51,7 @@ spec:
             valueFrom:
                 configMapKeyRef:
                   name: fishapp-authapi
-                  key: db.tz
+                  key: local.tz
           - name: MYSQL_TCP_PORT
             valueFrom:
                 configMapKeyRef:
