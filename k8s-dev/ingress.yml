@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /mysql/auth/
+        backend:
+          serviceName: auth-db
+          servicePort: 3306
+      - path: /api/auth/*
+        backend:
+          serviceName: auth
+          servicePort: 8080
+      - path: /*
+        backend:
+          serviceName: client
+          servicePort: 8080
