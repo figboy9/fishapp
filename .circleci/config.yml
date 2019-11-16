@@ -59,7 +59,6 @@ jobs:
 workflows:
   update-manifest:
     jobs:
-      
       - update-manifest:
           filters:
             branches:
