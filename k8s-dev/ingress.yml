@@ -8,10 +8,6 @@ spec:
   rules:
   - http:
       paths:
-      - path: /mysql/auth/
-        backend:
-          serviceName: auth-db
-          servicePort: 3306
       - path: /api/auth/*
         backend:
           serviceName: auth
