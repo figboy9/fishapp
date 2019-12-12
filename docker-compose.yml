@@ -1,54 +1,47 @@
 version: '3'
 services:
-  auth-db:
-    image: mysql:8.0.17
-    volumes:
-      - "auth-data:/var/lib/mysql"
-    command: --default-authentication-plugin=mysql_native_password
-    ports:
-      - "4306:3306"
-    env_file:
-      - .env_auth_db
-
-  client:
-    image: node:12.13.0-alpine
-    working_dir: /app
-    volumes:
-      - ./client:/app
-    environment:
-      HOST: 0.0.0.0
-    ports:
-      - "3000:3000"
-    command: /bin/sh -c "yarn && yarn dev"
-    env_file:
-      - .env_client
-
-  auth:
-    build:
-      context: ./server/auth
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./server/auth/src:/app
-    ports:
-      - 9000:9000
-    depends_on:
-      - auth-db
-    env_file:
-      - .env_auth
-
+  # post-db:
+  #   image: mysql:8.0.17
+  #   volumes:
+  #     - post-data:/var/lib/mysql
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: password
+  #     MYSQL_DATABASE: post_DB
+  #     TZ: Asia/Tokyo
+  #   ports:
+  #     - "4306:3306"
   # post:
   #   build:
-  #     context: ./server/post
+  #     context: server/post
+  #     dockerfile: Dockerfile.fresh
+  #   volumes:
+  #     - ./server/post/src:/app
+  #   depends_on:
+  #     - post-db
+  # client:
+  #   build:
+  #     context: client/
   #     dockerfile: Dockerfile.dev
   #   volumes:
-  #     - ./server/post:/app
+  #     - ./client:/app
   #   ports:
-  #     - 8000:9000
+  #     - 3000:3000
   #   tty: true
+  gateway:
+    build:
+      context: server/api-gateway
+      dockerfile: Dockerfile.fresh
+    volumes:
+      - ./server/api-gateway/src:/app
+    ports:
+      - 8080:8080
     # depends_on:
-    #   - auth-db
-    # env_file:
-    #   - .env_post
+    #   - post-db
+    environment:
+      GRAPHQL_PORT: 8080
+      POST_URL: post:50051
+      TIMEOUT: 2
 volumes:
-  auth-data:
+  post-data:
     driver: local

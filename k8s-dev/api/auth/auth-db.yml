@@ -41,22 +41,22 @@ spec:
           - name: MYSQL_ROOT_PASSWORD
             valueFrom:
                 secretKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.pass
           - name: MYSQL_DATABASE
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.name
           - name: TZ
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: overall
                   key: local.tz
           - name: MYSQL_TCP_PORT
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.port
         volumeMounts:
         - name: auth-data
@@ -64,4 +64,4 @@ spec:
       volumes:
       - name: auth-data
         persistentVolumeClaim:
-          claimName: local-claim
+          claimName: auth-claim

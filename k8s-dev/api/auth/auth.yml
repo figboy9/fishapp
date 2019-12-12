@@ -16,7 +16,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-deployment
+  name: auth
   labels:
     app: auth
   
@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: auth
-        image: fishapp_auth
+        image: auth
         tty: true
         ports:
         - containerPort: 8080
@@ -40,65 +40,65 @@ spec:
           - name: JWT_KEY
             valueFrom:
                 secretKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: jwtkey
           - name: PORT
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: gin.port
           - name: GIN_MODE
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: gin.mode
           - name: CLIENT_URL
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: client.url
           - name: EXP_SEC
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: idToken.exp.sec
           - name: RT_EXP_SEC
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: rtToken.exp.sec
           - name: TZ
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: overall
                   key: local.tz
           - name: DB_PASS
             valueFrom:
                 secretKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.pass
           - name: DB_DBMS
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.dbms
           - name: DB_USER
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.user
           - name: DB_NAME
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.name
           - name: DB_PORT
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.port
           - name: DB_HOST
             valueFrom:
                 configMapKeyRef:
-                  name: fishapp-authapi
+                  name: authapi
                   key: db.host

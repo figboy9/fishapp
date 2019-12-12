@@ -4,40 +4,44 @@ metadata:
   name: fishapp
 build:
   artifacts:
-  - image: fishapp_auth
-    context: server/auth
+  # - image: fishapp_auth
+  #   context: server/auth
+  #   docker: 
+  #     dockerfile: Dockerfile.dev
+  - image: api_gateway
+    context: server/api-gateway
     docker: 
       dockerfile: Dockerfile.dev
-    sync:
-      manual:
-      - src: 'src/**/*'
-        dest: /app
-        strip: src
-  - image: fishapp_client_nuxt
-    context: client
-    docker: 
+  - image: post
+    context: server/post
+    docker:
       dockerfile: Dockerfile.dev
-    sync:
-      manual:
-      - src: 'src/**/*'
-        dest: /app
+  - image: migrate_post_db
+    context: server/post/migrate
+  # - image: client_nuxt
+  #   context: client
+  #   docker:
+  #     dockerfile: Dockerfile.dev
+  #   sync:
+  #     manual:
+  #     - src: 'src/**/*'
+  #       dest: .
   local:
     useBuildkit: true
 
 deploy:
   kubectl:
     manifests:
-    - k8s-dev/local-pv.yml
-    - k8s-dev/local-pvc.yml
-    - k8s-dev/authapi-config.yml
-    - k8s-dev/authapi-secret.yml
-    - k8s-dev/auth-db.yml
-    - k8s-dev/auth.yml
-    - k8s-dev/client.yml
+    - k8s-dev/volume/*
+    - k8s-dev/config/*
+    - k8s-dev/secret/*
+    # - k8s-dev/api/client/*
+    - k8s-dev/api/post/*
+    - k8s-dev/api/api-gateway/*
     - k8s-dev/ingress.yml
 
 portForward:
 - resourceType: statefulset
-  resourceName: auth-db
+  resourceName: post-db
   port: 3306
   localPort: 5306
