@@ -8,11 +8,20 @@ spec:
   rules:
   - http:
       paths:
-      - path: /api/auth/*
+      # - path: /api/auth/*
+      #   backend:
+      #     serviceName: auth
+      #     servicePort: 8080
+      - path: /graphql
         backend:
-          serviceName: auth
+          serviceName: api-gateway
+          servicePort: 8080
+      - path: /graphql/playground
+        backend:
+          serviceName: api-gateway
           servicePort: 8080
       - path: /*
         backend:
           serviceName: client
           servicePort: 8080
+     
