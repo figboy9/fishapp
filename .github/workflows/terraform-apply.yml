@@ -1,0 +1,35 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+    - 'terraform/**'
+
+env:
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_REGION: asia-northeast1
+  GCP_ZONE: asia-northeast1-a
+  GCS_BUCKET_TF: ${{ secrets.GCS_BUCKET_TF }}
+  GCS_PREFIX_TF: ${{ secrets.GCS_PREFIX_TF }}
+
+jobs:
+  terraform-apply:
+    name: Terraform apply
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Generate credentials.json from secrets
+      run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+
+    - name: apply
+      run: |
+        docker run --rm --entrypoint "" -w /terraform \
+        -v $PWD/terraform:/terraform \
+        -v $PWD/credentials.json:/credentials.json \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+        hashicorp/terraform:light sh -c " \
+        terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
+        terraform apply -auto-approve -no-color -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "
