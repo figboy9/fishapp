@@ -39,9 +39,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      
     - uses: hashicorp/setup-terraform@v1
-
+    - run: cd terraform
+    
     - name: Terraform fmt
       id: fmt
       run: terraform fmt
