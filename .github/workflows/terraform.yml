@@ -45,7 +45,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Generate credentials.json from secrets
-      run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee /credentials.json >/dev/null
+      run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | sudo tee /credentials.json >/dev/null
 
     - uses: hashicorp/setup-terraform@v1
     
