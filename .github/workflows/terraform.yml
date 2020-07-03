@@ -11,21 +11,20 @@ env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
   GCP_REGION: asia-northeast1
   GCP_ZONE: asia-northeast1-a
-  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
   GCS_BUCKET_TF: ${{ secrets.GCS_BUCKET_TF }}
   GCS_PREFIX_TF: ${{ secrets.GCS_PREFIX_TF }}
 
 jobs:
   apply-manifest:
-    name: Apply Manifest
+    name: Apply Terraform
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
     - name: File From GCP_SA_KEY Env
-      run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
+      run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
 
-    - name: Kubesec Decryption
+    - name: Apply Terraform
       run: |
         docker run --rm --entrypoint "" -w /terraform \
         -v $PWD/terraform:/terraform \

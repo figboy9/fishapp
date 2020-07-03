@@ -11,7 +11,6 @@ env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
   GCP_ZONE: asia-northeast1-a
   GKE_CLUSTER: fishapp-cluster
-  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
 jobs:
   apply-manifest:
@@ -21,7 +20,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: File From GCP_SA_KEY Env
-      run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
+      run: echo ${{ secrets.KUBECTL_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
 
     - name: Kubesec Decryption
       run: |
