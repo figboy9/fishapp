@@ -14,22 +14,79 @@ env:
   GCS_BUCKET_TF: ${{ secrets.GCS_BUCKET_TF }}
   GCS_PREFIX_TF: ${{ secrets.GCS_PREFIX_TF }}
 
+# jobs:
+  # apply-terraform:
+  #   name: Apply terraform
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+
+  #   - name: Generate credentials.json from secrets
+  #     run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+
+  #   - name: Apply terraform
+  #     run: |
+  #       docker run --rm --entrypoint "" -w /terraform \
+  #       -v $PWD/terraform:/terraform \
+  #       -v $PWD/credentials.json:/credentials.json \
+  #       -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+  #       hashicorp/terraform:light sh -c " \
+  #       terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
+  #       terraform apply -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "
 jobs:
-  apply-manifest:
-    name: Apply Terraform
+  apply-terraform:
+    name: Apply terraform
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      
+    - uses: hashicorp/setup-terraform@v1
 
-    - name: File From GCP_SA_KEY Env
-      run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt
+      continue-on-error: true
 
-    - name: Apply Terraform
-      run: |
-        docker run --rm --entrypoint "" -w /terraform \
-        -v $PWD/terraform:/terraform \
-        -v $PWD/credentials.json:/credentials.json \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
-        hashicorp/terraform:light sh -c " \
-        terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
-        terraform plan -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "
+    - name: Terraform Init
+      id: init
+      run: terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF'
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.TF_SA_KEY }}
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE'
+      continue-on-error: true
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.TF_SA_KEY }}
+
+    # - uses: actions/github-script@0.9.0
+    #   if: github.event_name == 'pull_request'
+    #   env:
+    #     PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+    #   with:
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
+    #     script: |
+    #       const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+    #       #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+    #       #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
+    #       #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+          
+    #       <details><summary>Show Plan</summary>
+          
+    #       \`\`\`${process.env.PLAN}\`\`\`
+          
+    #       </details>
+          
+    #       *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            
+    #       github.issues.createComment({
+    #         issue_number: context.issue.number,
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         body: output
+    #       })

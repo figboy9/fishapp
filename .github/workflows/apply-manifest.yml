@@ -2,10 +2,10 @@ name: Apply Manifest
 
 on:
   push:
-    # branches:
-    #   - master
-    # paths:
-    # - 'k8s/**'
+    branches:
+      - master
+    paths:
+    - 'k8s/**'
 
 env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
@@ -19,7 +19,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: File From GCP_SA_KEY Env
+    - name: Generate credentials.json from secrets
       run: echo ${{ secrets.KUBECTL_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
 
     - name: Kubesec Decryption
