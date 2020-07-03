@@ -33,16 +33,16 @@ resource "google_project_service" "fishapp_service" {
 }
 
 resource "google_storage_bucket" "tf_state" {
-  name          = "${data.google_project.fishapp_project.project_id}-tf-state-prod"
-  location      = "us-west1"
-  storage_class = "REGIONAL"
+  name               = "${data.google_project.fishapp_project.project_id}-tf-state-prod"
+  location           = "us-west1"
+  storage_class      = "REGIONAL"
   bucket_policy_only = true
 
   versioning {
     enabled = true
   }
 
-  lifecycle_rule{
+  lifecycle_rule {
     action {
       type = "Delete"
     }

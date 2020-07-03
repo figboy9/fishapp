@@ -74,7 +74,7 @@ resource "google_project_iam_member" "fishapp_config_connector_iam" {
 
 resource "google_service_account_iam_member" "fishapp_GSA_to_KSA_iam" {
   service_account_id = google_service_account.fishapp_config_connector_account.name
-  role = "roles/iam.workloadIdentityUser"
+  role               = "roles/iam.workloadIdentityUser"
 
   member = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.k8s_namespace}]"
 }
