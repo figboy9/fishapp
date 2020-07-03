@@ -21,8 +21,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Generate credentials.json from secrets
-      run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+    # - name: Generate credentials.json from secrets
+    #   run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
 
     - name: Apply terraform
       run: |
