@@ -1,0 +1,22 @@
+apiVersion: mysql.presslabs.org/v1alpha1
+kind: MysqlCluster
+metadata:
+  name: user-db
+spec:
+  replicas: 1
+  secretName: user-db-secret
+  podSpec:
+    resources:
+      requests:
+        cpu: 30m
+        memory: 300Mi
+
+  volumeSpec:
+    persistentVolumeClaim:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  mysqlConf:
+    character-set-server: utf8mb4
+    collation-server: utf8mb4_unicode_ci

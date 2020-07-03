@@ -1,0 +1,43 @@
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMServiceAccount
+metadata:
+  name: fishapp-image-api-account
+spec:
+  displayName: '[Config Connector] Image API Account'
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMServiceAccountKey
+metadata:
+  name: fishapp-image-api-account-key
+spec:
+  serviceAccountRef:
+    name: fishapp-image-api-account
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: fishapp-image-api-object-admin
+spec:
+  member: serviceAccount:fishapp-image-api-account@fishapp-282106.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+  # バケットレベルのアクセス許可
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    external: fishapp-282106-image-bucket
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: fishapp-image-api-bucket-reader
+spec:
+  member: serviceAccount:fishapp-image-api-account@fishapp-282106.iam.gserviceaccount.com
+  role: roles/storage.legacyBucketReader
+  # バケットレベルのアクセス許可
+  resourceRef:
+    apiVersion: storage.cnrm.cloud.google.com/v1beta1
+    kind: StorageBucket
+    external: fishapp-282106-image-bucket
+---
+

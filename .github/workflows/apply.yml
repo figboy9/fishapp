@@ -1,0 +1,45 @@
+name: Apply Manifest
+
+on:
+  push:
+    paths:
+    - 'k8s/**'
+
+env:
+  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+  GKE_ZONE:
+  GKE_CLUSTER:
+
+jobs:
+  apply-manifest:
+    name: Apply Manifest
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    # - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+    #   with:
+    #     version: '290.0.1'
+    #     service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+    # - name: setup
+    #   run: |
+    #     gcloud components install kubectl
+    #     gcloud config set project $GKE_PROJECT
+    #     gcloud config set compute/zone $GKE_ZONE
+    #     gcloud container clusters get-credentials $GKE_CLUSTER
+    - name: File From GCP_SA_KEY Env
+      run: echo ${{ secrets.GCP_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+
+    - name: Kubesec Decryption
+      run: |
+        make kubesec GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
+        kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
+        kubesec decrypt -i api/chat/chat-db-secret.yml && \
+        kubesec decrypt -i api/chat/chat-kvs-secret.yml && \
+        kubesec decrypt -i api/image/image-db-secret.yml && \
+        kubesec decrypt -i api/post/post-db-secret.yml && \
+        kubesec decrypt -i api/relaylog/nats-streaming-secret.yml && \
+        kubesec decrypt -i api/user/user-db-secret.yml && \
+        kubesec decrypt -i api/user/user-kvs-secret.yml && \
+        kubesec decrypt -i api/user/user-secret.yml && \
+        kubesec decrypt -i overall/overall-secret.yml '"

@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: api-gateway
-data:
-  listen.port: "8080"
-  postapi.url: "post:8080"
-  timeout.sec: "2"

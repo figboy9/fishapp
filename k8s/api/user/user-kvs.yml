@@ -1,0 +1,34 @@
+apiVersion: databases.spotahome.com/v1
+kind: RedisFailover
+metadata:
+  name: user-kvs
+spec:
+  sentinel:
+    replicas: 3
+    resources:
+      requests:
+        cpu: 30m
+      limits:
+        memory: 100Mi
+  redis:
+    replicas: 1
+    resources:
+      requests:
+        cpu: 30m
+        memory: 100Mi
+      limits:
+        cpu: 400m
+        memory: 500Mi
+    storage:
+      persistentVolumeClaim:
+        metadata:
+          name: user-kvs-data
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+  auth:
+    secretPath: user-kvs-secret
+---

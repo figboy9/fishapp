@@ -1,0 +1,119 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: user
+spec:
+  selector:
+    app: user
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deployment
+  labels:
+    app: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      initContainers:
+      - name: init-user-db
+        image: busybox
+        command: ['sh', '-c', "until nslookup user-db-mysql-master.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: migrate
+        image: migrate/migrate
+        args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp-user/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(user-db-mysql-master:3306)/$(DB_NAME)", "up"]
+        env:
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: user-db-secret
+              key: ROOT_PASSWORD
+
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: user-db-secret
+              key: DATABASE
+
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: overall-secret
+              key: GITHUB_TOKEN
+
+      - name: init-user-kvs
+        image: busybox
+        command: ['sh', '-c', "until nslookup rfs-user-kvs.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-image
+        image: busybox
+        command: ['sh', '-c', "until nslookup image.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      containers:
+      - name: user
+        image: asia.gcr.io/fishapp-282106/user@sha256:ca08769b5468db74538532dde7868e02bbd536dca31224e0203d3651ff961025
+        ports:
+        - containerPort: 50051
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          initialDelaySeconds: 1
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          initialDelaySeconds: 1
+        env:
+        - name: SV_DEBUG
+          valueFrom:
+            configMapKeyRef:
+              name: overall-config
+              key: debug
+
+        - name: DB_HOST
+          value: user-db-mysql
+
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: user-db-secret
+              key: ROOT_PASSWORD
+
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: user-db-secret
+              key: DATABASE
+
+        - name: KVS_SENTINEL_HOST
+          value: rfs-user-kvs
+
+        - name: KVS_SENTINEL_PASS
+          valueFrom:
+            secretKeyRef:
+              name: user-kvs-secret
+              key: password
+
+        - name: AUTH_PVT_JWTKEY
+          valueFrom:
+            secretKeyRef:
+              name: user-secret
+              key: jwt.private.key
+
+        - name: AUTH_PUB_JWTKEY
+          valueFrom:
+            secretKeyRef:
+              name: user-secret
+              key: jwt.public.key

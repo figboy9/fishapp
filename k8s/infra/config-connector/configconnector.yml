@@ -1,0 +1,14 @@
+apiVersion: core.cnrm.cloud.google.com/v1beta1
+kind: ConfigConnector
+metadata:
+  # the name is restricted to ensure that there is only ConfigConnector instance installed in your cluster
+  name: configconnector.core.cnrm.cloud.google.com
+---
+apiVersion: core.cnrm.cloud.google.com/v1beta1
+kind: ConfigConnectorContext
+metadata:
+  # you can only have one ConfigConnectorContext per Namespace
+  name: configconnectorcontext.core.cnrm.cloud.google.com
+spec:
+  # The Google Service Account used to authenticate Google Cloud APIs in this Namespace
+  googleServiceAccount: fishapp-config-conn-account@fishapp-282106.iam.gserviceaccount.com

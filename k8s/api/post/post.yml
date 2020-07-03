@@ -1,0 +1,104 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: post
+spec:
+  selector:
+    app: post
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-deployment
+  labels:
+    app: post
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post
+  template:
+    metadata:
+      labels:
+        app: post
+    spec:
+      initContainers:
+      - name: init-post-db
+        image: busybox
+        command: ['sh', '-c', "until nslookup post-db-mysql-master.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: migrate
+        image: migrate/migrate
+        args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp-post/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(post-db-mysql-master:3306)/$(DB_NAME)", "up"]
+        env:
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: post-db-secret
+              key: ROOT_PASSWORD
+
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: post-db-secret
+              key: DATABASE
+
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: overall-secret
+              key: GITHUB_TOKEN
+
+      - name: init-nats-cluster
+        image: busybox
+        command: ['sh', '-c', "until nslookup nats-cluster.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-image
+        image: busybox
+        command: ['sh', '-c', "until nslookup image.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      containers:
+      - name: post
+        image: asia.gcr.io/fishapp-282106/post@sha256:6f3eb7b72182644a7a55401ca93cd077852fe3c9c1c832e647bf9fdf7a1a0366
+        ports:
+        - containerPort: 50051
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          initialDelaySeconds: 1
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          initialDelaySeconds: 1
+        env:
+        - name: SV_DEBUG
+          valueFrom:
+            configMapKeyRef:
+              name: overall-config
+              key: debug
+
+        - name: DB_HOST
+          value: post-db-mysql
+  
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: post-db-secret
+              key: ROOT_PASSWORD
+
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: post-db-secret
+              key: DATABASE
+
+        - name: NATS_URL
+          value: nats-cluster:4222
+
+        - name: NATS_CLUSTERID
+          value: nats-streaming-cluster

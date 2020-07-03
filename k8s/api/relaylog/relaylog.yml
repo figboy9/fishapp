@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relaylog-deployment
+  labels:
+    app: relaylog
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: relaylog
+  template:
+    metadata:
+      labels:
+        app: relaylog
+    spec:
+      initContainers:
+      - name: init-nats
+        image: busybox
+        command: ['sh', '-c', "until nslookup nats-cluster.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-chat-db
+        image: busybox
+        command: ['sh', '-c', "until nslookup chat-db-mysql.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-post-db
+        image: busybox
+        command: ['sh', '-c', "until nslookup post-db-mysql.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      containers:
+      - name: relaylog
+        image: asia.gcr.io/fishapp-282106/relaylog@sha256:96aacc7f978e82c45bd393b5f47a3c274d88664d41a32607dfb633fb130511a6
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+          initialDelaySeconds: 1
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 8080
+          initialDelaySeconds: 1
+        env:
+        - name: POSTDB_HOST
+          value: post-db-mysql
+
+        - name: POSTDB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: post-db-secret
+              key: ROOT_PASSWORD
+
+        - name: CHATDB_HOST
+          value: chat-db-mysql
+        
+        - name: CHATDB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: chat-db-secret
+              key: ROOT_PASSWORD
+
+        - name: NATS_URL
+          value: nats-cluster:4222
+
+        - name: NATS_CLUSTERID
+          value: nats-streaming-cluster
+
+        - name: SAMPLE
+          value: sample
