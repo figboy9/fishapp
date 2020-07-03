@@ -34,7 +34,7 @@ jobs:
 
     - name: Kubesec Decryption
       run: |
-      	docker run --rm -w /work \
+        docker run --rm -w /work \
         -v $PWD/credentials.json:/credentials.json \
         -v $PWD/k8s:/work \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
