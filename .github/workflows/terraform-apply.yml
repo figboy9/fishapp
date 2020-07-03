@@ -32,4 +32,5 @@ jobs:
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         hashicorp/terraform:light sh -c " \
         terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
+        terraform fmt -check \
         terraform apply -auto-approve -no-color -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "
