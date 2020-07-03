@@ -13,6 +13,7 @@ env:
   GCP_ZONE: asia-northeast1-a
   GCS_BUCKET_TF: ${{ secrets.GCS_BUCKET_TF }}
   GCS_PREFIX_TF: ${{ secrets.GCS_PREFIX_TF }}
+  TF_SA_KEY: ${{ secrets.TF_SA_KEY }}
 
 jobs:
   apply-terraform:
@@ -28,7 +29,7 @@ jobs:
       run: |
         docker run --rm --entrypoint "" -w /terraform \
         -v $PWD/terraform:/terraform \
-        -e GOOGLE_CREDENTIALS=${{ secrets.TF_SA_KEY }} \
+        -e GOOGLE_CREDENTIALS=$TF_SA_KEY \
         hashicorp/terraform:light sh -c " \
         terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
         terraform plan -no-color -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "
