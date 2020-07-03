@@ -66,6 +66,3 @@ spec:
 
         - name: NATS_CLUSTERID
           value: nats-streaming-cluster
-
-        - name: SAMPLE
-          value: sample

@@ -34,11 +34,7 @@ jobs:
 
     - name: Kubesec Decryption
       run: |
-        docker run --rm --workdir /work  \
-        -v $PWD/credentials.json:/credentials.json \
-        -v $PWD/k8s:/work \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
-        ezio1119/kubesec sh -c " \
+        make kubesec TTY="" GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
         kubesec decrypt -i api/chat/chat-db-secret.yml && \
         kubesec decrypt -i api/chat/chat-kvs-secret.yml && \
@@ -48,5 +44,9 @@ jobs:
         kubesec decrypt -i api/user/user-db-secret.yml && \
         kubesec decrypt -i api/user/user-kvs-secret.yml && \
         kubesec decrypt -i api/user/user-secret.yml && \
-        kubesec decrypt -i overall/overall-secret.yml "
+        kubesec decrypt -i overall/overall-secret.yml '"
 
+    - name: Apply Manifest
+      run: |
+        make kubectl TTY="" GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
+        kubectl apply -f . --recursive '"
