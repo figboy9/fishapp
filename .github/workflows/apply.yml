@@ -34,9 +34,11 @@ jobs:
 
     - name: Kubesec Decryption
       run: |
-        make kubesec TTY="" \
-        GCP_KUBECTL_KEY=$PWD/credentials.json \
-        CMD="sh -c ' \
+      	docker run --rm --w /work \
+        -v $PWD/credentials.json:/credentials.json \
+        -v $PWD/k8s:/work \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+        ezio1119/kubesec sh -c " \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
         kubesec decrypt -i api/chat/chat-db-secret.yml && \
         kubesec decrypt -i api/chat/chat-kvs-secret.yml && \
@@ -46,14 +48,17 @@ jobs:
         kubesec decrypt -i api/user/user-db-secret.yml && \
         kubesec decrypt -i api/user/user-kvs-secret.yml && \
         kubesec decrypt -i api/user/user-secret.yml && \
-        kubesec decrypt -i overall/overall-secret.yml '"
+        kubesec decrypt -i overall/overall-secret.yml "
 
     - name: Apply Manifest
       run: |
-        make kubectl TTY="" \
-        GCP_KUBECTL_KEY=$PWD/credentials.json \
-        ZONE=$GKE_ZONE \
-        CLUSTER=$GKE_CLUSTER \
-        PROJECT_ID=$GKE_PROJECT \
-        CMD="sh -c ' \
-        kubectl apply -f . --recursive '"
+        docker run --rm -w /k8s \
+        -v $PWD/k8s:/k8s \
+        -v $PWD/credentials.json:/credentials.json \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+        ezio1119/cloud-sdk-kubectl-helm sh -c " \
+        gcloud auth activate-service-account --key-file=/credentials.json && \
+        gcloud config set project $GKE_PROJECT && \
+        gcloud config set compute/zone $GKE_ZONE && \
+        gcloud container clusters get-credentials $GKE_CLUSTER && \
+        kubectl apply -f . --recursive "
