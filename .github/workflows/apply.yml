@@ -34,7 +34,7 @@ jobs:
 
     - name: Kubesec Decryption
       run: |
-        make kubesec GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
+        make kubesec TTY="" GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
         kubesec decrypt -i api/chat/chat-db-secret.yml && \
         kubesec decrypt -i api/chat/chat-kvs-secret.yml && \
@@ -45,3 +45,8 @@ jobs:
         kubesec decrypt -i api/user/user-kvs-secret.yml && \
         kubesec decrypt -i api/user/user-secret.yml && \
         kubesec decrypt -i overall/overall-secret.yml '"
+
+    - name: Apply Manifest
+      run: |
+        make kubectl TTY="" GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
+        kubectl apply -f . --recursive '"

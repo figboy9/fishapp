@@ -1,6 +1,8 @@
 CWD = $(shell pwd)
 GCP_TERRA_KEY = ~/.ssh/gcp/fishapp/terraform.json
 GCP_KUBECTL_KEY = ~/.ssh/gcp/fishapp/kubectl.json
+TTY = -it
+CMD = sh
 
 terra:
 	docker run -it --rm --name terra --entrypoint sh -w /terraform \
@@ -11,7 +13,7 @@ terra:
 
 # gcloud, kubectl, helm入りのdocker image
 kubectl:
-	docker run -it --rm --name kubectl -w /k8s \
+	docker run $(TTY) --rm --name kubectl -w /k8s \
 	-v $(CWD)/k8s:/k8s \
 	-v $(GCP_KUBECTL_KEY):/credentials.json \
 	-e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
@@ -20,10 +22,10 @@ kubectl:
 	gcloud config set project $(PROJECT_ID) && \
 	gcloud config set compute/zone $(ZONE) && \
 	gcloud container clusters get-credentials $(CLUSTER) && \
-	sh"
+	${CMD}"
 
 kubesec:
-	docker run --workdir /work --rm --name kubesec \
+	docker run $(TTY) --workdir /work --rm --name kubesec \
 	-v $(GCP_KUBECTL_KEY):/credentials.json \
 	-v $(CWD)/k8s:/work \
 	-e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
