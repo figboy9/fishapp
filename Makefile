@@ -23,7 +23,7 @@ kubectl:
 	sh"
 
 kubesec:
-	docker run --workdir /work -it --rm --name kubesec \
+	docker run --workdir /work --rm --name kubesec \
 	-v $(GCP_KUBECTL_KEY):/credentials.json \
 	-v $(CWD)/k8s:/work \
 	-e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
