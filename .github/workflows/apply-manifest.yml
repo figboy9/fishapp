@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      path: 'k8s'
+      with:
+        path: 'k8s'
 
     - name: File From GCP_SA_KEY Env
       run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
