@@ -2,10 +2,10 @@ name: Apply Terraform
 
 on:
   push:
-    branches:
-      - master
-    paths:
-    - 'terraform/**'
+    # branches:
+    #   - master
+    # paths:
+    # - 'terraform/**'
 
 env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
