@@ -43,10 +43,11 @@ jobs:
       run:
         shell: bash
         working-directory: terraform
-    - run: echo $GCS_BUCKET_TF
+    
 
     steps:
     - uses: actions/checkout@v2
+    - run: echo $GCS_BUCKET_TF
     - uses: hashicorp/setup-terraform@v1
     
     - name: Terraform fmt
