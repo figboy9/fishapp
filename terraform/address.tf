@@ -1,5 +1,5 @@
 resource "google_compute_global_address" "fishapp_external_address" {
-  name = "fishapp-external-address"
+  name        = "fishapp-external-address"
   description = "fishapp External Address"
 }
 

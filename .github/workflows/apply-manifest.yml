@@ -11,7 +11,6 @@ env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
   GCP_ZONE: asia-northeast1-a
   GKE_CLUSTER: fishapp-cluster
-  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
 jobs:
   apply-manifest:
@@ -19,17 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        path: 'k8s'
 
-    - name: File From GCP_SA_KEY Env
-      run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
+    - name: Generate credentials.json from secrets
+      run: echo ${{ secrets.KUBECTL_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
 
     - name: Kubesec Decryption
       run: |
         docker run --rm -w /work \
         -v $PWD/credentials.json:/credentials.json \
-        -v $PWD:/work \
+        -v $PWD/k8s:/work \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         ezio1119/kubesec sh -c " \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
@@ -46,7 +43,7 @@ jobs:
     - name: Apply Manifest
       run: |
         docker run --rm -w /k8s \
-        -v $PWD:/k8s \
+        -v $PWD/k8s:/k8s \
         -v $PWD/credentials.json:/credentials.json \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         ezio1119/cloud-sdk-kubectl-helm sh -c " \
