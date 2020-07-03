@@ -43,6 +43,7 @@ jobs:
       run:
         shell: bash
         working-directory: terraform
+    - run: echo $GCS_BUCKET_TF
 
     steps:
     - uses: actions/checkout@v2
