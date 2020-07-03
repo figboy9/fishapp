@@ -8,6 +8,7 @@ terra:
 	docker run -it --rm --name terra --entrypoint sh -w /terraform \
 	-v $(CWD)/terraform:/terraform \
 	-v $(GCP_TERRA_KEY):/credentials.json \
+	-e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
 	hashicorp/terraform:light
 
 # gcloud, kubectl, helm入りのdocker image
