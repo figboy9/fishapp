@@ -9,8 +9,8 @@ on:
 
 env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
-  GKE_ZONE:
-  GKE_CLUSTER:
+  GKE_ZONE: asia-northeast1-a
+  GKE_CLUSTER: fishapp-cluster
 
 jobs:
   apply-manifest:
@@ -34,7 +34,9 @@ jobs:
 
     - name: Kubesec Decryption
       run: |
-        make kubesec TTY="" GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
+        make kubesec TTY="" \
+        GCP_KUBECTL_KEY=$PWD/credentials.json \
+        CMD="sh -c ' \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
         kubesec decrypt -i api/chat/chat-db-secret.yml && \
         kubesec decrypt -i api/chat/chat-kvs-secret.yml && \
@@ -48,5 +50,10 @@ jobs:
 
     - name: Apply Manifest
       run: |
-        make kubectl TTY="" GCP_KUBECTL_KEY=$PWD/credentials.json CMD="sh -c ' \
+        make kubectl TTY="" \
+        GCP_KUBECTL_KEY=$PWD/credentials.json \
+        ZONE=$GKE_ZONE \
+        CLUSTER=$GKE_CLUSTER \
+        PROJECT_ID=$GKE_PROJECT \
+        CMD="sh -c ' \
         kubectl apply -f . --recursive '"
