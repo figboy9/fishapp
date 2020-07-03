@@ -1,0 +1,94 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: api-gateway
+spec:
+  selector:
+    app: api-gateway
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      initContainers:
+      - name: init-nats
+        image: busybox
+        command: ['sh', '-c', "until nslookup nats-cluster.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-image
+        image: busybox
+        command: ['sh', '-c', "until nslookup image.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-post
+        image: busybox
+        command: ['sh', '-c', "until nslookup post.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-user
+        image: busybox
+        command: ['sh', '-c', "until nslookup user.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-chat
+        image: busybox
+        command: ['sh', '-c', "until nslookup chat.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      containers:
+      - name: api-gateway
+        image: asia.gcr.io/fishapp-282106/api-gateway@sha256:f459a3ac56580ea2dcbe086a89800980ad9d5f873351826ec08e50ddb01c234a
+        readinessProbe:
+          exec:
+            command: ['sh', '-c', "/healthcheck.sh"]
+          initialDelaySeconds: 1
+        livenessProbe:
+          exec:
+            command: ['sh', '-c', "/healthcheck.sh"]
+          initialDelaySeconds: 1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SV_DEBUG
+          valueFrom:
+            configMapKeyRef:
+              name: overall-config
+              key: debug
+  
+        - name: GRAPHQL_PLAYGROUND_USER
+          valueFrom:
+            secretKeyRef:
+              name: api-gateway-secret
+              key: gql.playground.user
+
+        - name: GRAPHQL_PLAYGROUND_PASS
+          valueFrom:
+            secretKeyRef:
+              name: api-gateway-secret
+              key: gql.playground.pass
+
+        - name: NATS_URL
+          value: nats-cluster:4222
+
+        - name: NATS_CLUSTERID
+          value: nats-streaming-cluster
+
+        - name: AUTH_PUB_JWTKEY
+          valueFrom:
+            secretKeyRef:
+              name: user-secret
+              key: jwt.public.key

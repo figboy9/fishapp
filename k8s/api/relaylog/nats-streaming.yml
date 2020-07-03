@@ -1,0 +1,47 @@
+apiVersion: nats.io/v1alpha2
+kind: NatsCluster
+metadata:
+  name: nats-cluster
+spec:
+  size: 1
+---
+apiVersion: streaming.nats.io/v1alpha1
+kind: NatsStreamingCluster
+metadata:
+  name: nats-streaming-cluster
+spec:
+  size: 1
+  natsSvc: nats-cluster
+
+  config:
+    storeDir: /pv/stan
+  configFile: /etc/stan/config/secret.conf
+
+  template:
+    spec:
+      volumes:
+      - name: nats-streaming-data
+        persistentVolumeClaim:
+          claimName: nats-streaming-pvc
+      - name: nats-streaming-secret
+        secret:
+          secretName: nats-streaming-secret
+      containers:
+        - name: nats-streaming
+          volumeMounts:
+          - mountPath: /pv
+            name: nats-streaming-data
+          - mountPath: /etc/stan/config
+            name: nats-streaming-secret
+            readOnly: true
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nats-streaming-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

@@ -1,0 +1,117 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: chat
+spec:
+  selector:
+    app: chat
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-deployment
+  labels:
+    app: chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat
+  template:
+    metadata:
+      labels:
+        app: chat
+    spec:
+      initContainers:
+      - name: init-chat-db
+        image: busybox
+        command: ['sh', '-c', "until nslookup chat-db-mysql-master.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: migrate
+        image: migrate/migrate
+        args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp-chat/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(chat-db-mysql-master:3306)/$(DB_NAME)", "up"]
+        env:
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: chat-db-secret
+              key: ROOT_PASSWORD
+
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: chat-db-secret
+              key: DATABASE
+
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: overall-secret
+              key: GITHUB_TOKEN
+
+      - name: init-chat-kvs
+        image: busybox
+        command: ['sh', '-c', "until nslookup rfs-chat-kvs.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-nats-streaming
+        image: busybox
+        command: ['sh', '-c', "until nslookup nats-cluster.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: init-image
+        image: busybox
+        command: ['sh', '-c', "until nslookup image.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      containers:
+      - name: chat
+        image: asia.gcr.io/fishapp-282106/chat@sha256:45091ada3d8b198a647f875d7a56e4a11bb68601beb8e048099e6e3095df764b
+        ports:
+        - containerPort: 50051
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          initialDelaySeconds: 1
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+          initialDelaySeconds: 1
+        env:
+        - name: SV_DEBUG
+          valueFrom:
+            configMapKeyRef:
+              name: overall-config
+              key: debug
+
+        - name: DB_HOST
+          value: chat-db-mysql
+
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: chat-db-secret
+              key: ROOT_PASSWORD
+
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: chat-db-secret
+              key: DATABASE
+
+        - name: KVS_SENTINEL_HOST
+          value: rfs-chat-kvs
+
+        - name: KVS_SENTINEL_PASS
+          valueFrom:
+            secretKeyRef:
+              name: chat-kvs-secret
+              key: password
+
+        - name: NATS_URL
+          value: nats-cluster:4222
+
+        - name: NATS_CLUSTERID
+          value: nats-streaming-cluster
