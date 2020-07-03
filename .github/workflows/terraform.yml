@@ -2,10 +2,10 @@ name: Apply Terraform
 
 on:
   push:
-    branches:
-      - master
-    paths:
-    - 'terraform/**'
+    # branches:
+    #   - master
+    # paths:
+    # - 'terraform/**'
 
 env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
@@ -21,8 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      with:
-        path: 'terraform'
 
     - name: File From GCP_SA_KEY Env
       run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
