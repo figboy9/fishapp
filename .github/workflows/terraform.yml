@@ -2,10 +2,10 @@ name: Apply Terraform
 
 on:
   push:
-    branches:
-      - master
-    paths:
-    - 'terraform/**'
+    # branches:
+    #   - master
+    # paths:
+    # - 'terraform/**'
 
 env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
@@ -30,7 +30,7 @@ jobs:
     - name: Kubesec Decryption
       run: |
         docker run --rm --entrypoint "" -w /terraform \
-        -v $PWD:/terraform \
+        -v $PWD/terraform:/terraform \
         -v $PWD/credentials.json:/credentials.json \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         hashicorp/terraform:light sh -c " \
