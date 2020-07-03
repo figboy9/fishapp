@@ -8,9 +8,10 @@ on:
     - 'k8s/**'
 
 env:
-  GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
-  GKE_ZONE: asia-northeast1-a
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_ZONE: asia-northeast1-a
   GKE_CLUSTER: fishapp-cluster
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
 
 jobs:
   apply-manifest:
@@ -18,25 +19,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    # - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-    #   with:
-    #     version: '290.0.1'
-    #     service_account_key: ${{ secrets.GCP_SA_KEY }}
+      path: 'k8s'
 
-    # - name: setup
-    #   run: |
-    #     gcloud components install kubectl
-    #     gcloud config set project $GKE_PROJECT
-    #     gcloud config set compute/zone $GKE_ZONE
-    #     gcloud container clusters get-credentials $GKE_CLUSTER
     - name: File From GCP_SA_KEY Env
-      run: echo ${{ secrets.GCP_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+      run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
 
     - name: Kubesec Decryption
       run: |
         docker run --rm -w /work \
         -v $PWD/credentials.json:/credentials.json \
-        -v $PWD/k8s:/work \
+        -v $PWD:/work \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         ezio1119/kubesec sh -c " \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
@@ -53,12 +45,12 @@ jobs:
     - name: Apply Manifest
       run: |
         docker run --rm -w /k8s \
-        -v $PWD/k8s:/k8s \
+        -v $PWD:/k8s \
         -v $PWD/credentials.json:/credentials.json \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         ezio1119/cloud-sdk-kubectl-helm sh -c " \
         gcloud auth activate-service-account --key-file=/credentials.json && \
-        gcloud config set project $GKE_PROJECT && \
-        gcloud config set compute/zone $GKE_ZONE && \
+        gcloud config set project $GCP_PROJECT && \
+        gcloud config set compute/zone $GCP_ZONE && \
         gcloud container clusters get-credentials $GKE_CLUSTER && \
         kubectl apply -f . --recursive "
