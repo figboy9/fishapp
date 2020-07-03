@@ -2,10 +2,10 @@ name: Apply Manifest
 
 on:
   push:
-    branches:
-      - master
-    paths:
-    - 'k8s/**'
+    # branches:
+    #   - master
+    # paths:
+    # - 'k8s/**'
 
 env:
   GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
@@ -22,36 +22,38 @@ jobs:
       with:
         path: 'k8s'
 
-    - name: File From GCP_SA_KEY Env
-      run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
+    # - name: File From GCP_SA_KEY Env
+    #   run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
 
-    - name: Kubesec Decryption
-      run: |
-        docker run --rm -w /work \
-        -v $PWD/credentials.json:/credentials.json \
-        -v $PWD:/work \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
-        ezio1119/kubesec sh -c " \
-        kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
-        kubesec decrypt -i api/chat/chat-db-secret.yml && \
-        kubesec decrypt -i api/chat/chat-kvs-secret.yml && \
-        kubesec decrypt -i api/image/image-db-secret.yml && \
-        kubesec decrypt -i api/post/post-db-secret.yml && \
-        kubesec decrypt -i api/relaylog/nats-streaming-secret.yml && \
-        kubesec decrypt -i api/user/user-db-secret.yml && \
-        kubesec decrypt -i api/user/user-kvs-secret.yml && \
-        kubesec decrypt -i api/user/user-secret.yml && \
-        kubesec decrypt -i overall/overall-secret.yml "
+    - run: ls
 
-    - name: Apply Manifest
-      run: |
-        docker run --rm -w /k8s \
-        -v $PWD:/k8s \
-        -v $PWD/credentials.json:/credentials.json \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
-        ezio1119/cloud-sdk-kubectl-helm sh -c " \
-        gcloud auth activate-service-account --key-file=/credentials.json && \
-        gcloud config set project $GCP_PROJECT && \
-        gcloud config set compute/zone $GCP_ZONE && \
-        gcloud container clusters get-credentials $GKE_CLUSTER && \
-        kubectl apply -f . --recursive "
+    # - name: Kubesec Decryption
+    #   run: |
+    #     docker run --rm -w /work \
+    #     -v $PWD/credentials.json:/credentials.json \
+    #     -v $PWD:/work \
+    #     -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+    #     ezio1119/kubesec sh -c " \
+    #     kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
+    #     kubesec decrypt -i api/chat/chat-db-secret.yml && \
+    #     kubesec decrypt -i api/chat/chat-kvs-secret.yml && \
+    #     kubesec decrypt -i api/image/image-db-secret.yml && \
+    #     kubesec decrypt -i api/post/post-db-secret.yml && \
+    #     kubesec decrypt -i api/relaylog/nats-streaming-secret.yml && \
+    #     kubesec decrypt -i api/user/user-db-secret.yml && \
+    #     kubesec decrypt -i api/user/user-kvs-secret.yml && \
+    #     kubesec decrypt -i api/user/user-secret.yml && \
+    #     kubesec decrypt -i overall/overall-secret.yml "
+
+    # - name: Apply Manifest
+    #   run: |
+    #     docker run --rm -w /k8s \
+    #     -v $PWD:/k8s \
+    #     -v $PWD/credentials.json:/credentials.json \
+    #     -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+    #     ezio1119/cloud-sdk-kubectl-helm sh -c " \
+    #     gcloud auth activate-service-account --key-file=/credentials.json && \
+    #     gcloud config set project $GCP_PROJECT && \
+    #     gcloud config set compute/zone $GCP_ZONE && \
+    #     gcloud container clusters get-credentials $GKE_CLUSTER && \
+    #     kubectl apply -f . --recursive "
