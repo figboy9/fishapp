@@ -33,14 +33,16 @@ env:
   #       hashicorp/terraform:light sh -c " \
   #       terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
   #       terraform apply -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "
-defaults:
-  run:
-    working-directory: terraform
 
 jobs:
   apply-terraform:
     name: Apply terraform
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: terraform
+
     steps:
     - uses: actions/checkout@v2
     - uses: hashicorp/setup-terraform@v1
