@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        path: 'k8s'
+        path: 'k8s/'
 
     # - name: File From GCP_SA_KEY Env
     #   run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
