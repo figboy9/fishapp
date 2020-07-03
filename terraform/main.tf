@@ -107,6 +107,3 @@ resource "google_container_node_pool" "fishapp_nodes" {
     ]
   }
 }
-
-
-

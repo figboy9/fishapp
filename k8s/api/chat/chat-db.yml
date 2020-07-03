@@ -22,3 +22,4 @@ spec:
     log_bin: chatdb.bin
     binlog_format: ROW
     server-id: 1
+
