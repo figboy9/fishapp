@@ -17,3 +17,4 @@ resource "google_compute_global_address" "fishapp_external_address" {
 
 #   rrdatas = [google_compute_global_address.fishapp_external_address.address]
 # }
+

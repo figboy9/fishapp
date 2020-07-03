@@ -1,0 +1,37 @@
+name: Apply Terraform
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+    - 'terraform/**'
+
+env:
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_REGION: asia-northeast1
+  GCP_ZONE: asia-northeast1-a
+  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+  GCS_BUCKET_TF: ${{ secrets.GCS_BUCKET_TF }}
+  GCS_PREFIX_TF: ${{ secrets.GCS_PREFIX_TF }}
+
+jobs:
+  apply-manifest:
+    name: Apply Manifest
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      path: 'terraform'
+
+    - name: File From GCP_SA_KEY Env
+      run: echo $GCP_SA_KEY | base64 -d | tee ./credentials.json >/dev/null
+
+    - name: Kubesec Decryption
+      run: |
+        docker run --rm --entrypoint "" -w /terraform \
+        -v $PWD:/terraform \
+        -v $PWD/credentials.json:/credentials.json \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+        hashicorp/terraform:light sh -c " \
+        terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
+        terraform plan -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "
