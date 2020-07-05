@@ -35,3 +35,4 @@ exec:
 
 logs:
 	docker logs -f --tail 100 $(PJT_NAME)_$(SVC)_1
+	
