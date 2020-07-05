@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: microservices/chat
+        working-directory: terraform
     steps:
     - uses: actions/checkout@v2
 
@@ -28,8 +28,7 @@ jobs:
     - name: plan
       run: |
         docker run --rm --entrypoint "" -w /terraform \
-        -v $PWD/terraform:/terraform \
-        -v $PWD/credentials.json:/credentials.json \
+        -v $PWD:/terraform \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         hashicorp/terraform:light sh -c " \
         terraform init && \
