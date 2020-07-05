@@ -27,3 +27,4 @@ variable "dns_name" {
   type        = string
   default     = "fishapp.work."
 }
+
