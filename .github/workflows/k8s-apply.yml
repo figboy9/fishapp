@@ -1,4 +1,4 @@
-name: Apply Manifest
+name: K8S Apply Manifest
 
 on:
   push:
@@ -14,7 +14,7 @@ env:
 
 jobs:
   apply-manifest:
-    name: Apply Manifest
+    name: Apply manifest
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -22,7 +22,7 @@ jobs:
     - name: Generate credentials.json from secrets
       run: echo ${{ secrets.KUBECTL_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
 
-    - name: Kubesec Decryption
+    - name: Kubesec decryption
       run: |
         docker run --rm -w /work \
         -v $PWD/credentials.json:/credentials.json \
@@ -40,7 +40,7 @@ jobs:
         kubesec decrypt -i api/user/user-secret.yml && \
         kubesec decrypt -i overall/overall-secret.yml "
 
-    - name: Apply Manifest
+    - name: Apply manifest
       run: |
         docker run --rm -w /k8s \
         -v $PWD/k8s:/k8s \

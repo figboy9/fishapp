@@ -1,20 +1,23 @@
-name: Build and Publish to GCR
+name: Post Build and Publish to GCR
 
 on:
   push:
     paths:
-    - 'microservices/relaylog/**'
+    - 'microservices/post/**'
     branches:
     - master
 
 env:
   GCP_PROJECT: fishapp-282106
-  IMAGE: relaylog
+  IMAGE: post
 
 jobs:
   setup-build-publish:
     name: Setup, Build, Publish
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/post
     steps:
     - uses: actions/checkout@v2
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
