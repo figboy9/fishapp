@@ -1,0 +1,146 @@
+directive @isPostOwner on FIELD_DEFINITION
+directive @isApplyPostOwner on FIELD_DEFINITION
+scalar Upload
+scalar Time
+
+extend type Query {
+  posts(first: Int, after: String, input: PostsInput!): PostConnection! # Relay connection
+  post(id: ID!): Post!
+}
+
+extend type Mutation {
+  createPost(input: CreatePostInput!): CreatePostPayload! @isAuthenticated
+  updatePost(input: UpdatePostInput!): UpdatePostPayload! @isPostOwner @isAuthenticated
+  deletePost(input: DeletePostInput!): DeletePostPayload! @isPostOwner @isAuthenticated
+  createApplyPost(input: CreateApplyPostInput!): CreateApplyPostPayload! @isAuthenticated
+  deleteApplyPost(input: DeleteApplyPostInput!): DeleteApplyPostPayload! @isApplyPostOwner @isAuthenticated
+}
+
+extend type Subscription {
+  createPostResult(input: CreatePostResultInput!): CreatePostResultPayload! @isAuthenticated
+}
+
+extend type Post {
+  id: ID!
+  title: String!
+  content: String!
+  fishingSpotTypeId: ID! # 1: 陸っぱり, 2: 渓流釣り, 3: 釣り船, 4: 釣り堀
+  fishTypeIds: [ID!]!
+  prefectureId: ID!
+  meetingPlaceId: String!
+  meetingAt: Time!
+  applyPosts: [ApplyPost!]
+  images: [Image!]
+  user: User!
+  maxApply: Int!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+extend type ApplyPost {
+  id: ID!
+  user: User!
+  post: Post!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+input PostsInput {
+  prefectureId: ID
+  fishingSpotTypeId: ID
+  fishTypeIds: [ID!]
+  meetingAtFrom: Time
+  meetingAtTo: Time
+  canApply: Boolean
+  orderBy: PostOrderBy # デフォルトは DESC
+  sortBy: PostSortBy # デフォルトはCREATED_AT
+  userId: ID 
+}
+
+enum PostOrderBy {
+  DESC
+  ASC
+}
+
+enum PostSortBy {
+  CREATED_AT
+  MEETING_AT
+}
+
+extend type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+type PostConnection {
+  pageInfo: PageInfo!
+  nodes: [Post]
+}
+
+input CreatePostInput {
+  title: String!
+  content: String!
+  fishingSpotTypeId: ID!
+  fishTypeIds: [ID!]!
+  prefectureId: ID! # 普通に選ばせる or Google Place API のレスポンスのadministrative_area_level_1と取ってきたIDを比較する
+  meetingPlaceId: String! # Google Place ID
+  meetingAt: Time!
+  maxApply: Int!
+  images: [Upload!]
+}
+
+type CreatePostPayload {
+  post: Post!
+  sagaId: String!
+}
+
+input UpdatePostInput{
+  id: ID!
+  title: String!
+  content: String!
+  fishingSpotTypeId: ID!
+  fishTypeIds: [ID!]!
+  prefectureId: ID!
+  meetingPlaceId: String!
+  meetingAt: Time!
+  maxApply: Int!
+  imageIdsToDelete: [Int!]
+  images: [Upload!]
+}
+
+type UpdatePostPayload {
+  post: Post!
+}
+
+input DeletePostInput{
+  id: ID!
+}
+
+type DeletePostPayload {
+  success: Boolean!
+}
+
+input CreateApplyPostInput {
+  postId: ID!
+}
+
+type CreateApplyPostPayload {
+  applyPost: ApplyPost!
+}
+
+input DeleteApplyPostInput {
+  id: ID!
+}
+
+type DeleteApplyPostPayload {
+  success: Boolean!
+}
+
+input CreatePostResultInput {
+  sagaId: String!
+}
+
+type CreatePostResultPayload {
+  post: Post
+  error: String
+}

@@ -11,7 +11,7 @@ locals {
     "roles/container.admin",
   ]
 
-  fishapp_github_actions_roles = [
+  fishapp_push_image_roles = [
     "roles/storage.admin"
   ]
 
@@ -46,19 +46,19 @@ resource "google_service_account_key" "fishapp_kubectl_account_key" {
   service_account_id = google_service_account.fishapp_kubectl_account.name
 }
 
-resource "google_service_account" "fishapp_github_actions_account" {
-  account_id   = "fishapp-github-actions-account"
-  display_name = "[Terraform] fishapp Github Actions Account"
+resource "google_service_account" "fishapp_push_image_account" {
+  account_id   = "fishapp-push-image-account"
+  display_name = "[Terraform] fishapp Push Image Account"
 }
 
-resource "google_project_iam_member" "fishapp_github_actions_iam" {
-  for_each = toset(local.fishapp_github_actions_roles)
+resource "google_project_iam_member" "fishapp_push_image_iam" {
+  for_each = toset(local.fishapp_push_image_roles)
   role     = each.value
-  member   = "serviceAccount:${google_service_account.fishapp_github_actions_account.email}"
+  member   = "serviceAccount:${google_service_account.fishapp_push_image_account.email}"
 }
 
-resource "google_service_account_key" "fishapp_github_actions_account_key" {
-  service_account_id = google_service_account.fishapp_github_actions_account.name
+resource "google_service_account_key" "fishapp_push_image_account_key" {
+  service_account_id = google_service_account.fishapp_push_image_account.name
 }
 
 resource "google_service_account" "fishapp_config_connector_account" {

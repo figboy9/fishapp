@@ -1,0 +1,55 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: user
+spec:
+  selector:
+    app: user
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-deployment
+  labels:
+    app: user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      volumes:
+      - name: user-db-sql
+        hostPath:
+          path: /microservices/user/db/sql
+      initContainers:
+      # - name: init-user-db
+      #   image: busybox
+      #   command: ['sh', '-c', "until nslookup user-db-mysql.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+
+      - name: migration
+        image: migrate/migrate
+        args: ["-path", "/sql/", "-database", "mysql://root:password@tcp(user-db-mysql:3306)/user_DB", "up"]
+        volumeMounts:
+        - name: user-db-sql
+          mountPath: /sql
+
+      containers:
+      - name: user
+        image: user
+        ports:
+        - containerPort: 50051
+        env:
+        - name: DB_HOST
+          value: user-db-mysql
+        - name: KVS_HOST
+          value: blacklist-kvs-redis-master

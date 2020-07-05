@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  # Unique key of the Job instance
+  name: post-db-migration-job
+spec:
+  template:
+    metadata:
+      name: post-db-migration-job
+    spec:
+      volumes:
+      - name: post-db-sql
+        hostPath:
+          path: /microservices/post/db/sql
+      containers:
+      - name: migration
+        image: migrate/migrate
+        args: ["-path", "/sql/", "-database", "mysql://root:password@tcp(post-db-mysql:3306)/post_DB", "up"]
+        volumeMounts:
+        - name: post-db-sql
+          mountPath: /sql
+      restartPolicy: Never

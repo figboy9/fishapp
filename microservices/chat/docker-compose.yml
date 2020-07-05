@@ -1,0 +1,37 @@
+version: '3.4'
+services:
+  chat:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: hot-reload
+    volumes:
+      - .:/app
+    depends_on:
+      - chat-kvs
+      - chat-db
+    tty: true
+
+  chat-db:
+    image: mysql:5.7
+    volumes:
+      - chat-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --log-bin=chatdb.bin  --binlog-format=ROW --server-id=1
+    tty: true
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: chat_DB
+    ports:
+      - "5306:3306"
+
+  chat-kvs:
+    image: redis:5.0-alpine
+    tty: true
+    command: ["--requirepass", "password"]
+
+volumes:
+  chat-data:
+networks:
+  default:
+    external:
+      name: fishapp-net

@@ -1,0 +1,104 @@
+syntax = "proto3";
+package user;
+option go_package = ".;pb";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service UserService {
+  rpc CurrentUser(CurrentUserReq) returns (User);// require id_token
+  rpc GetUser(GetUserReq) returns (User); // no email field
+  rpc CreateUser(stream CreateUserReq) returns (CreateUserRes);
+  rpc UpdateUser(stream UpdateUserReq) returns (User); // require id_token
+  rpc UpdatePassword(UpdatePasswordReq) returns (google.protobuf.Empty); // require id_token
+  rpc Login(LoginReq) returns (LoginRes);
+  rpc Logout(LogoutReq) returns (google.protobuf.Empty); // require refresh_token
+  rpc RefreshIDToken(RefreshIDTokenReq) returns (RefreshIDTokenRes); // require refresh_token
+}
+
+message User {
+  int64 id = 1;
+  string email = 2;
+  string name = 3;
+  string introduction = 4;
+  Sex sex = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+enum Sex {
+  SEX_UNSPECIFIED = 0;
+  MALE = 1;
+  FEMALE = 2;
+}
+
+message TokenPair{
+  string id_token = 1;
+  string refresh_token = 2;
+}
+
+message CurrentUserReq {}
+
+message GetUserReq {
+  int64 id = 1 [(validate.rules).int64.gte = 1];
+}
+
+message CreateUserReq {
+  oneof data{
+    option (validate.required) = true;
+
+    CreateUserReqInfo info = 1;
+    bytes image_chunk = 2 [(validate.rules).bytes = {max_len: 65536}]; // ~ 64KiB;
+  }
+}
+
+message CreateUserReqInfo {
+  string email = 1 [(validate.rules).string.email = true];
+  string password = 2 [(validate.rules).string.pattern = "^[A-Za-z0-9]{6,72}$"]; // 6文字以上72文字以下の英数字
+  string name = 3 [(validate.rules).string = {min_len: 1, max_len: 10}];
+  string introduction = 4 [(validate.rules).string = {min_len: 1, max_len: 1000}];
+  Sex sex = 5 [(validate.rules).enum = {not_in: [0]}, (validate.rules).enum.defined_only = true];
+}
+
+message CreateUserRes {
+  User user = 1;
+  TokenPair token_pair = 2;
+}
+
+message UpdateUserReq {
+  oneof data{
+    option (validate.required) = true;
+
+    UpdateUserReqInfo info = 1;
+    bytes image_chunk = 2 [(validate.rules).bytes = {max_len: 65536}]; // ~ 64KiB;
+  }
+}
+
+message UpdateUserReqInfo {
+  string email = 1 [(validate.rules).string.email = true];
+  string name = 2 [(validate.rules).string = {min_len: 1, max_len: 10}];
+  string introduction = 3 [(validate.rules).string = {min_len: 1, max_len: 1000}];
+}
+
+message UpdatePasswordReq {
+  string old_password = 1 [(validate.rules).string.pattern = "^[A-Za-z0-9]{6,72}$"]; // 6文字以上72文字以下の英数字
+  string new_password = 2 [(validate.rules).string.pattern = "^[A-Za-z0-9]{6,72}$"]; // 6文字以上72文字以下の英数字
+}
+
+message LoginReq {
+  string email = 1 [(validate.rules).string.email = true];
+  string password = 2 [(validate.rules).string.pattern = "^[A-Za-z0-9]{6,72}$"]; // 6文字以上72文字以下の英数字
+}
+
+message LoginRes {
+  User user = 1;
+  TokenPair token_pair = 2;
+}
+
+message LogoutReq {}
+
+message RefreshIDTokenReq {}
+
+message RefreshIDTokenRes {
+  TokenPair token_pair = 1;
+}

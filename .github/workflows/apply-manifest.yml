@@ -8,7 +8,7 @@ on:
     - 'k8s/**'
 
 env:
-  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_PROJECT: fishapp-282106
   GCP_ZONE: asia-northeast1-a
   GKE_CLUSTER: fishapp-cluster
 

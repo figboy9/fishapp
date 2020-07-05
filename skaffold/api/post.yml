@@ -1,0 +1,49 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: post
+spec:
+  selector:
+    app: post
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-deployment
+  labels:
+    app: post
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post
+  template:
+    metadata:
+      labels:
+        app: post
+    spec:
+      volumes:
+      - name: post-db-sql
+        hostPath:
+          path: /microservices/post/db/sql
+      initContainers:
+      - name: migration
+        image: migrate/migrate
+        args: ["-path", "/sql/", "-database", "mysql://root:password@tcp(post-db-mysql:3306)/post_DB", "up"]
+        volumeMounts:
+        - name: post-db-sql
+          mountPath: /sql
+
+      containers:
+      - name: post
+        image: post
+        ports:
+        - containerPort: 50051
+        env:
+        - name: DB_HOST
+          value: post-db-mysql

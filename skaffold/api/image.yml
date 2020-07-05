@@ -1,0 +1,48 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: image
+spec:
+  selector:
+    app: image
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-deployment
+  labels:
+    app: image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image
+  template:
+    metadata:
+      labels:
+        app: image
+    spec:
+      volumes:
+      - name: image-db-sql
+        hostPath:
+          path: /microservices/image/db/sql
+      initContainers:
+      - name: migration
+        image: migrate/migrate
+        args: ["-path", "/sql/", "-database", "mysql://root:password@tcp(image-db-mysql:3306)/image_DB", "up"]
+        volumeMounts:
+        - name: image-db-sql
+          mountPath: /sql
+      containers:
+      - name: image
+        image: image
+        ports:
+        - containerPort: 50051
+        env:
+        - name: DB_HOST
+          value: image-db-mysql

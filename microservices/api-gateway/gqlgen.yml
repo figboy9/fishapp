@@ -1,5 +1,6 @@
+# gqlgenのコード生成用dockerコンテナ内のスキーマパス
 schema:
-  - schema/api-gateway/*.graphql
+  - schema/*.graphql
 
 exec:
   filename: graph/generated/generated.go

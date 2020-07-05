@@ -1,0 +1,29 @@
+sv:
+  healthcheck:
+    path: /healthcheck
+    port: 8080
+
+nats:
+  url: "nats-streaming:4222"
+  clusterid: "fishapp-cluster"
+  clientid: "fishapp-relaylog"
+  subject:
+    pospostdb: "postdb.position"
+    poschatdb: "chatdb.position"
+  publishernum: 4
+
+postdb:
+  dbms: mysql
+  user: root
+  pass: password
+  host: post-db
+  port: 3306
+  charset: utf8mb4
+
+chatdb:
+  dbms: mysql
+  user: root
+  pass: password
+  host: chat-db
+  port: 3306
+  charset: utf8mb4

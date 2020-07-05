@@ -8,11 +8,11 @@ on:
     - 'terraform/**'
 
 env:
-  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  GCP_PROJECT: fishapp-282106
   GCP_REGION: asia-northeast1
   GCP_ZONE: asia-northeast1-a
-  GCS_BUCKET_TF: ${{ secrets.GCS_BUCKET_TF }}
-  GCS_PREFIX_TF: ${{ secrets.GCS_PREFIX_TF }}
+  GCS_BUCKET_TF: fishapp-282106-tf-state-prod
+  GCS_PREFIX_TF: terraform/state
 
 jobs:
   terraform-apply:

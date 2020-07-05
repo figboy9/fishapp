@@ -1,0 +1,138 @@
+apiVersion: skaffold/v2beta5
+kind: Config
+metadata:
+  name: skaffold
+build:
+  artifacts:
+  - image: user
+    context: ../microservices/user
+    # sync:
+    #   manual:
+    #     - src: '**/*'
+    #       dest: /app
+    docker:
+      dockerfile: Dockerfile.dev
+      # target: hot-reload
+
+  - image: chat
+    context: ../microservices/chat
+    # sync:
+    #   manual:
+    #     - src: '**/*'
+    #       dest: /app
+    docker:
+      dockerfile: Dockerfile.dev
+      # target: hot-reload
+
+  - image: image
+    context: ../microservices/image
+    # sync:
+    #   manual:
+    #     - src: '**/*'
+    #       dest: /app
+    docker:
+      dockerfile: Dockerfile.dev
+      # target: hot-reload
+
+  - image: post
+    context: ../microservices/post
+    # sync:
+    #   manual:
+    #     - src: '**/*'
+    #       dest: /app
+    docker:
+      dockerfile: Dockerfile.dev
+      # target: hot-reload
+
+  - image: relaylog
+    context: ../microservices/relaylog
+    # sync:
+    #   manual:
+    #     - src: '**/*'
+    #       dest: /app
+    docker:
+      dockerfile: Dockerfile.dev
+      # target: hot-reload
+
+  - image: api-gateway
+    context: ../microservices/api-gateway
+    sync:
+      manual:
+        - src: '**/*'
+          dest: /app
+    docker:
+      dockerfile: Dockerfile.dev
+      target: hot-reload
+
+deploy:
+  kubectl:
+    manifests:
+    - volumes/*.yml
+    - middleware/nats/*.yml
+    - api/*.yml
+  helm:
+    releases:
+    - name: user-db
+      chartPath: stable/mysql
+      valuesFiles: ["middleware/helm/user-db-values.yml"]
+      remote: true
+
+    - name: chat-db
+      chartPath: stable/mysql
+      valuesFiles: ["middleware/helm/chat-db-values.yml"]
+      remote: true
+
+    - name: image-db
+      chartPath: stable/mysql
+      valuesFiles: ["middleware/helm/image-db-values.yml"]
+      remote: true
+    
+    - name: post-db
+      chartPath: stable/mysql
+      valuesFiles: ["middleware/helm/post-db-values.yml"]
+      remote: true
+
+    - name: blacklist-kvs
+      chartPath: bitnami/redis
+      setValues: {
+        cluster.slaveCount: 0,
+        global.redis.password: password,
+        master.persistence.size: 1Gi,
+      }
+      remote: true
+
+    - name: chat-kvs
+      chartPath: bitnami/redis
+      setValues: {
+        cluster.slaveCount: 0,
+        global.redis.password: password,
+        master.persistence.size: 1Gi,
+      }
+      remote: true
+
+portForward:
+- resourceType: Service
+  resourceName: user-db-mysql
+  localPort: 4306
+  port: 3306
+
+- resourceType: Service
+  resourceName: chat-db-mysql
+  localPort: 5306
+  port: 3306
+
+- resourceType: Service
+  resourceName: image-db-mysql
+  localPort: 6306
+  port: 3306
+
+- resourceType: Service
+  resourceName: post-db-mysql
+  localPort: 7306
+  port: 3306
+
+- resourceType: Service
+  resourceName: api-gateway
+  localPort: 8080
+  port: 8080
+

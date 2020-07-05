@@ -1,0 +1,90 @@
+directive @isAuthenticated on FIELD_DEFINITION # これがついてるとidTokenが必要
+# authAPIにトークンをプロキシするだけでgatewayでは認証をしないので、isAuthenticatedをつけない。
+extend type Query {
+  currentUser: User! # require id_token
+  user(id: ID!): User! 
+}
+
+extend type Mutation {
+  createUser(input: CreateUserInput!): CreateUserPayload! # require id_token
+  updateUser(input: UpdateUserInput!): UpdateUserPayload! # require id_token
+  updatePassword(input: UpdatePasswordInput!): UpdatePasswordPayload! # require id_token
+  refreshIDToken: RefreshIDTokenPayload! # require refresh_token
+  login(input: LoginInput!): LoginPayload!
+  logout: LogoutPayload! # require refresh_token
+}
+
+extend type User {
+  id: ID!
+  email: String
+  name: String!
+  introduction: String!
+  sex: Sex!
+  posts: [Post!]
+  applyPosts: [ApplyPost!] 
+  image: Image
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+enum Sex {
+  MALE
+  FEMALE
+}
+
+input CreateUserInput {
+  email: String!
+  password: String! # 6文字以上72文字以下の英数字
+  name: String!
+  sex: Sex!
+  introduction: String!
+  image: Upload
+}
+
+type CreateUserPayload {
+  user: User!
+  tokenPair: TokenPair!
+}
+
+input UpdateUserInput {
+  email: String!
+  name: String!
+  introduction: String!
+  image: Upload
+}
+
+type UpdateUserPayload {
+  user: User!
+}
+
+input UpdatePasswordInput {
+  oldPassword: String!
+  newPassword: String!
+}
+
+type UpdatePasswordPayload {
+  success: Boolean!
+}
+
+type RefreshIDTokenPayload{
+  tokenPair: TokenPair!
+}
+
+type TokenPair {
+  idToken: String!
+  refreshToken: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginPayload {
+  user: User!
+  tokenPair: TokenPair!
+}
+
+type LogoutPayload {
+  success: Boolean!
+}

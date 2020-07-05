@@ -1144,7 +1144,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	&ast.Source{Name: "schema/api-gateway/chat.graphql", Input: `directive @isMember on FIELD_DEFINITION
+	&ast.Source{Name: "schema/chat.graphql", Input: `directive @isMember on FIELD_DEFINITION
 
 extend type Query {
   room(post_id: ID!): Room! @isMember @isAuthenticated # isAuthenticatedが先に発火
@@ -1202,10 +1202,10 @@ input MessageAddedInput {
 type MessageAddedPayload {
   message: Message!
 }`, BuiltIn: false},
-	&ast.Source{Name: "schema/api-gateway/healthcheck.graphql", Input: `extend type Query {
+	&ast.Source{Name: "schema/healthcheck.graphql", Input: `extend type Query {
   healthCheck: Boolean!
 }`, BuiltIn: false},
-	&ast.Source{Name: "schema/api-gateway/image.graphql", Input: `
+	&ast.Source{Name: "schema/image.graphql", Input: `
 extend type Image {
   id: ID!
   name: String!
@@ -1220,7 +1220,7 @@ enum OwnerType {
   USER
   MESSAGE
 }`, BuiltIn: false},
-	&ast.Source{Name: "schema/api-gateway/post.graphql", Input: `directive @isPostOwner on FIELD_DEFINITION
+	&ast.Source{Name: "schema/post.graphql", Input: `directive @isPostOwner on FIELD_DEFINITION
 directive @isApplyPostOwner on FIELD_DEFINITION
 scalar Upload
 scalar Time
@@ -1366,7 +1366,7 @@ type CreatePostResultPayload {
   post: Post
   error: String
 }`, BuiltIn: false},
-	&ast.Source{Name: "schema/api-gateway/user.graphql", Input: `directive @isAuthenticated on FIELD_DEFINITION # これがついてるとidTokenが必要
+	&ast.Source{Name: "schema/user.graphql", Input: `directive @isAuthenticated on FIELD_DEFINITION # これがついてるとidTokenが必要
 # authAPIにトークンをプロキシするだけでgatewayでは認証をしないので、isAuthenticatedをつけない。
 extend type Query {
   currentUser: User! # require id_token

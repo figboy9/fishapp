@@ -1,0 +1,71 @@
+syntax = "proto3";
+package image;
+option go_package = ".;pb";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service ImageService {
+  rpc ListImagesByOwnerID(ListImagesByOwnerIDReq) returns (ListImagesByOwnerIDRes);
+  rpc BatchCreateImages(stream BatchCreateImagesReq) returns (BatchCreateImagesRes);
+  rpc BatchDeleteImages(BatchDeleteImagesReq) returns (google.protobuf.Empty); // 削除するレコードがなくてもエラーなし
+  rpc BatchDeleteImagesByOwnerIDs(BatchDeleteImagesByOwnerIDsReq) returns (google.protobuf.Empty); // 削除するレコードがなくてもエラーなし
+  rpc DeleteImagesByOwnerID(DeleteImagesByOwnerIDReq) returns (google.protobuf.Empty);
+}
+
+message Image {
+  int64 id = 1;
+  string name = 2;
+  int64 owner_id = 3;
+  OwnerType owner_type = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message ImageInfo {
+  int64 owner_id = 1 [(validate.rules).int64.gte = 1];
+  OwnerType owner_type = 2 [(validate.rules).enum = {not_in: [0]}, (validate.rules).enum.defined_only = true];
+}
+
+enum OwnerType {
+  OWNERTYPE_UNSPECIFIED = 0;
+  POST = 1;
+  USER = 2;
+  MESSAGE = 3;
+}
+
+message ListImagesByOwnerIDReq {
+  int64 owner_id = 1 [(validate.rules).int64.gte = 1];
+  OwnerType owner_type = 2 [(validate.rules).enum = {not_in: [0]}, (validate.rules).enum.defined_only = true];
+}
+
+message ListImagesByOwnerIDRes {
+  repeated Image images = 1;
+}
+
+message BatchCreateImagesRes {
+  repeated Image images = 1;
+}
+
+message BatchCreateImagesReq {
+  oneof data{
+    option (validate.required) = true;
+
+    ImageInfo info = 1;
+    bytes chunk = 2 [(validate.rules).bytes = {max_len: 65536}]; // ~ 64KiB
+  }
+}
+
+message BatchDeleteImagesReq {
+  repeated int64 ids = 1 [(validate.rules).repeated.items.int64.gte = 14, (validate.rules).repeated.min_items = 1, (validate.rules).repeated.unique = true];
+}
+
+message BatchDeleteImagesByOwnerIDsReq {
+  repeated int64 owner_ids = 1;
+  OwnerType owner_type = 2 [(validate.rules).enum = {not_in: [0]}, (validate.rules).enum.defined_only = true];
+}
+
+message DeleteImagesByOwnerIDReq {
+  int64 owner_id = 1 [(validate.rules).int64.gte = 1];
+  OwnerType owner_type = 2 [(validate.rules).enum = {not_in: [0]}, (validate.rules).enum.defined_only = true];
+}

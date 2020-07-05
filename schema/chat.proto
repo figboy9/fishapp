@@ -1,0 +1,113 @@
+syntax = "proto3";
+package chat;
+option go_package = ".;pb";
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+service ChatService {
+  rpc GetRoom(GetRoomReq) returns (Room);
+  rpc CreateRoom(CreateRoomReq) returns (Room); // user_idでcreateMemberもする
+
+  rpc IsMember(IsMemberReq) returns (google.protobuf.BoolValue); // ユーザーがルームメンバーか確認。post_idからroomを取る
+  rpc ListMembers(ListMembersReq) returns (ListMembersRes);
+  rpc CreateMember(CreateMemberReq) returns (Member);
+  rpc DeleteMember(DeleteMemberReq) returns (google.protobuf.Empty);
+
+  rpc ListMessages(ListMessagesReq) returns (ListMessagesRes);
+  rpc CreateMessage(stream CreateMessageReq) returns (Message);
+  rpc StreamMessage(StreamMessageReq)returns (stream Message);
+}
+
+message Room {
+  int64 id = 1;
+  int64 post_id = 2;
+  repeated Member members = 3;
+  repeated Message messages = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message Member {
+  int64 id = 1;
+  int64 room_id = 2;
+  int64 user_id = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message Message {
+  int64 id = 1;
+  string body = 2;
+  int64 room_id = 3;
+  int64 user_id = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message GetRoomReq {
+  oneof get_room {
+    int64 room_id = 1;
+    int64 post_id = 2;
+  }
+}
+
+message CreateRoomReq {
+  int64 post_id = 1 [(validate.rules).int64.gte = 1];
+  int64 user_id = 2 [(validate.rules).int64.gte = 1];
+}
+
+message IsMemberReq {
+  oneof is_member {
+    int64 room_id = 1 [(validate.rules).int64.gte = 1];
+    int64 post_id = 2 [(validate.rules).int64.gte = 1];
+  }
+
+  int64 user_id = 3 [(validate.rules).int64.gte = 1];
+}
+
+message ListMembersReq {
+  int64 room_id = 1 [(validate.rules).int64.gte = 1];
+}
+
+message ListMembersRes {
+  repeated Member members = 1;
+}
+
+message CreateMemberReq {
+  int64 room_id = 1 [(validate.rules).int64.gte = 1];
+  int64 user_id = 2 [(validate.rules).int64.gte = 1];
+}
+
+message DeleteMemberReq {
+  int64 room_id = 1 [(validate.rules).int64.gte = 1];
+  int64 user_id = 2 [(validate.rules).int64.gte = 1];
+}
+
+message CreateMessageReq {
+  oneof data{
+    option (validate.required) = true;
+
+    CreateMessageReqInfo info = 1;
+    bytes image_chunk = 2 [(validate.rules).bytes = {max_len: 65536}]; // ~ 64KiB;
+  }
+}
+
+message CreateMessageReqInfo {
+  string body = 1;
+  int64 room_id = 2 [(validate.rules).int64.gte = 1];
+  int64 user_id = 3 [(validate.rules).int64.gte = 1];
+}
+
+message ListMessagesReq {
+  int64 room_id = 1 [(validate.rules).int64.gte = 1];
+}
+
+message ListMessagesRes {
+  repeated Message messages = 1;
+}
+
+message StreamMessageReq {
+  int64 room_id = 1 [(validate.rules).int64.gte = 1];
+}

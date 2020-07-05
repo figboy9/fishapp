@@ -1,0 +1,42 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: nats-streaming
+spec:
+  selector:
+    app: nats-streaming
+  ports:
+  - protocol: TCP
+    port: 4222
+    targetPort: 4222
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-streaming-deployment
+  labels:
+    app: nats-streaming
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-streaming
+  template:
+    metadata:
+      labels:
+        app: nats-streaming
+    spec:
+      volumes:
+      - name: nats-streaming-vol
+        persistentVolumeClaim:
+          claimName: nats-streaming-pvc
+      
+      containers:
+      - name: nats-streaming
+        image: nats-streaming:alpine
+        ports:
+        - containerPort: 4222
+        args: ["-p", "4222", "-m", "8222", "-cid", "fishapp-cluster", "-st", "FILE", "--dir", "/data"]
+        volumeMounts:
+        - name: nats-streaming-vol
+          mountPath: /data

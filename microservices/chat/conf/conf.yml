@@ -1,0 +1,32 @@
+db:
+  dbms: mysql
+  name: chat_DB
+  user: root
+  pass: password
+  net: tcp
+  host: chat-db
+  port: 3306
+  parsetime: true
+  allowNativePasswords: true
+kvs:
+  db: 0
+  pass: password
+  host: chat-kvs
+  port: 6379
+  net: tcp
+  sentinel:
+    host: sentinel-host
+    port: 26379
+    mastername: mymaster
+    pass: password
+nats:
+  url: "nats-streaming:4222"
+  clusterid: "fishapp-cluster"
+  queuegroup: "fishapp-chat"
+sv:
+  timeout: 2
+  port: 50051
+  debug: true
+  imagechunksize: 16384
+api:
+  image_url: image:50051

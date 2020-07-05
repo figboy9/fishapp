@@ -32,7 +32,7 @@ spec:
         image: busybox
         command: ['sh', '-c', "until nslookup user-db-mysql-master.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
 
-      - name: migrate
+      - name: migration
         image: migrate/migrate
         args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp-user/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(user-db-mysql-master:3306)/$(DB_NAME)", "up"]
         env:

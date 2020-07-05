@@ -3,28 +3,26 @@ services:
   api-gateway:
     build:
       context: .
-      target: dev
+      dockerfile: Dockerfile.dev
+      target: hot-reload
     volumes:
       - .:/app
     environment:
       TZ: Asia/Tokyo
-    # command: sh
     ports:
       - "8080:8080"
+    command: sh
     tty: true
     depends_on:
       - nats-streaming
 
   nats-streaming:
     image: nats-streaming:latest
-    command: -p 4223 -m 8223 -cid fishapp-cluster -st FILE --dir /nats-streaming-data
+    command: -p 4222 -m 8222 -cid fishapp-cluster -st FILE --dir /nats-streaming-data
     ports:
-      - 8223:8223
-    environment:
-      TZ: Asia/Tokyo
+      - 8222:8222
     volumes:
       - nats-streaming-data:/nats-streaming-data
-
 
 volumes:
   nats-streaming-data:
