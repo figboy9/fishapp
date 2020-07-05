@@ -7,17 +7,15 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
 service ChatService {
-  rpc GetRoom(GetRoomReq) returns (Room);
-  rpc CreateRoom(CreateRoomReq) returns (Room); // user_idでcreateMemberもする
+  rpc GetRoom(GetRoomReq) returns (Room); // room_idかuser_idでRoomを取得。
+  rpc CreateRoom(CreateRoomReq) returns (Room); // Roomを作成。受け取ったuser_idでMemberを作成。
 
-  rpc IsMember(IsMemberReq) returns (google.protobuf.BoolValue); // ユーザーがルームメンバーか確認。post_idからroomを取る
-  rpc ListMembers(ListMembersReq) returns (ListMembersRes);
-  rpc CreateMember(CreateMemberReq) returns (Member);
-  rpc DeleteMember(DeleteMemberReq) returns (google.protobuf.Empty);
+  rpc IsMember(IsMemberReq) returns (google.protobuf.BoolValue); // UserがRoomのMemberか確認。
+  rpc ListMembers(ListMembersReq) returns (ListMembersRes); // RoomのMemberを取得。
 
-  rpc ListMessages(ListMessagesReq) returns (ListMessagesRes);
-  rpc CreateMessage(stream CreateMessageReq) returns (Message);
-  rpc StreamMessage(StreamMessageReq)returns (stream Message);
+  rpc ListMessages(ListMessagesReq) returns (ListMessagesRes); // RoomのMessageの一覧を取得。
+  rpc CreateMessage(stream CreateMessageReq) returns (Message); // Messageを作成。
+  rpc StreamMessage(StreamMessageReq)returns (stream Message); // RoomのMessageをサーバーサイドストリーミングで取得。
 }
 
 message Room {
@@ -73,16 +71,6 @@ message ListMembersReq {
 
 message ListMembersRes {
   repeated Member members = 1;
-}
-
-message CreateMemberReq {
-  int64 room_id = 1 [(validate.rules).int64.gte = 1];
-  int64 user_id = 2 [(validate.rules).int64.gte = 1];
-}
-
-message DeleteMemberReq {
-  int64 room_id = 1 [(validate.rules).int64.gte = 1];
-  int64 user_id = 2 [(validate.rules).int64.gte = 1];
 }
 
 message CreateMessageReq {

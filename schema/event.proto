@@ -8,10 +8,15 @@ import "post.proto";
 
 message Event {
   string id = 1;
+  // 送るイベントのタイプ
   string event_type = 2;
+  // event_dataの集約のID
   string aggregate_id = 3;
+  // event_dataの集約の名前
   string aggregate_type = 4;
+  // 下記のRoomCreated, CreateRoomFailedなどをjson化したもの
   bytes event_data = 5;
+  // メッセージキューに送るチャネルの名前
   string channel = 6;
   google.protobuf.Timestamp created_at = 7;
   google.protobuf.Timestamp updated_at = 8;

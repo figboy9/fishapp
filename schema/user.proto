@@ -6,7 +6,8 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 service UserService {
-  rpc CurrentUser(CurrentUserReq) returns (User);// require id_token
+  // id_tokenを検証しUserを取得。emailも含まれる。
+  rpc CurrentUser(CurrentUserReq) returns (User);
   rpc GetUser(GetUserReq) returns (User); // no email field
   rpc CreateUser(stream CreateUserReq) returns (CreateUserRes);
   rpc UpdateUser(stream UpdateUserReq) returns (User); // require id_token

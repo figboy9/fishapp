@@ -6,10 +6,17 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 service ImageService {
+  // owner_id, owner_typeに紐づくImageの一覧を取得
   rpc ListImagesByOwnerID(ListImagesByOwnerIDReq) returns (ListImagesByOwnerIDRes);
+  // ImageInfo, chunkのどちらかをストリームで受け取る。
+  // ImageInfoが送られて来たら、次のイメージと判断。
   rpc BatchCreateImages(stream BatchCreateImagesReq) returns (BatchCreateImagesRes);
-  rpc BatchDeleteImages(BatchDeleteImagesReq) returns (google.protobuf.Empty); // 削除するレコードがなくてもエラーなし
+  // ImageのIDの配列を受け取り、全て削除する
+  // 削除するレコードがなくてもエラーなし
+  rpc BatchDeleteImages(BatchDeleteImagesReq) returns (google.protobuf.Empty); 
+  // owner_idを配列, owner_typeを受け取り、紐づくImageを全て削除。
   rpc BatchDeleteImagesByOwnerIDs(BatchDeleteImagesByOwnerIDsReq) returns (google.protobuf.Empty); // 削除するレコードがなくてもエラーなし
+  // owner_id, owner_typeに紐づくImageを削除。
   rpc DeleteImagesByOwnerID(DeleteImagesByOwnerIDReq) returns (google.protobuf.Empty);
 }
 
