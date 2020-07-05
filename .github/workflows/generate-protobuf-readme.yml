@@ -2,6 +2,8 @@ name: Gen protobuf README and Push to GitHub
 
 on:
   push:
+    paths:
+    - 'schema/*.proto'
     branches:
     - master
 
@@ -9,6 +11,9 @@ jobs:
   genreadme-push:
     name: Generate, Push
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: schema
     steps:
     - uses: actions/checkout@v2
 
