@@ -1,4 +1,4 @@
-name: Chat Build and Publish to GCR
+name: Chat API Build and Publish to GCR
 
 on:
   push:

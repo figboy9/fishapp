@@ -1,4 +1,4 @@
-name: Post Build and Publish to GCR
+name: Post API Build and Publish to GCR
 
 on:
   push:

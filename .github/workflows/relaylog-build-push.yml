@@ -1,4 +1,4 @@
-name: Relaylog Build and Publish to GCR
+name: Relaylog API Build and Publish to GCR
 
 on:
   push:
