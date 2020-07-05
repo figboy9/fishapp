@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relaylog-deployment
+  labels:
+    app: relaylog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: relaylog
+  template:
+    metadata:
+      labels:
+        app: relaylog
+    spec:
+      containers:
+      - name: relaylog
+        image: relaylog
+        env:
+        - name: POSTDB_HOST
+          value: post-db-mysql
+        - name: CHATDB_HOST
+          value: chat-db-mysql

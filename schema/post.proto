@@ -1,0 +1,169 @@
+syntax = "proto3";
+package post;
+option go_package = ".;pb";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service PostService {
+  rpc GetPost(GetPostReq) returns (Post); // 投稿の詳細を取得
+  rpc ListPosts(ListPostsReq) returns (ListPostsRes); // 投稿の絞り込み検索 & ページネーション
+  rpc CreatePost(stream CreatePostReq) returns (CreatePostRes); // 投稿を作成
+  rpc UpdatePost(stream UpdatePostReq) returns (Post); // 投稿を更新
+  rpc DeletePost(DeletePostReq) returns (google.protobuf.Empty); // 投稿を削除
+
+  rpc GetApplyPost(GetApplyPostReq) returns (ApplyPost);
+  rpc ListApplyPosts(ListApplyPostsReq) returns (ListApplyPostsRes); // その投稿の応募情報のリストを取得, そのユーザーの応募した投稿リストを取得
+  rpc BatchGetApplyPostsByPostIDs(BatchGetApplyPostsByPostIDsReq) returns (BatchGetApplyPostsByPostIDsRes);
+  rpc CreateApplyPost(CreateApplyPostReq) returns (ApplyPost); // ユーザーが投稿に応募する
+  rpc DeleteApplyPost(DeleteApplyPostReq) returns (google.protobuf.Empty); // ユーザーがその投稿の応募を取り消す
+}
+
+message Post {
+  int64 id = 1; 
+  string title = 2;
+  string content = 3;
+  int64 fishing_spot_type_id = 4;
+  repeated int64 fish_type_ids = 5;
+  int64 prefecture_id = 6;
+  string meeting_place_id = 7;
+  google.protobuf.Timestamp meeting_at = 8;
+  int64 user_id = 9;
+  int64 max_apply = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message ApplyPost {
+  int64 id = 1;
+  int64 post_id = 2;
+  int64 user_id = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message GetPostReq {
+  int64 id = 1 [(validate.rules).int64.gte = 1];
+}
+
+message ListPostsReq {
+  message Filter {
+    int64 prefecture_id = 1 [(validate.rules).int64.lte = 47]; // フロントでenum管理 都道府県コード
+    int64 fishing_spot_type_id = 2 [(validate.rules).int64.lte = 4]; // フロントでenum管理 1: 陸っぱり, 2: 渓流釣り, 3: 釣り船, 4: 釣り堀 
+    repeated int64 fish_type_ids = 3 [(validate.rules).repeated.items.int64.lte = 95, (validate.rules).repeated.min_items = 1, (validate.rules).repeated.unique = true]; // フロントでenum管理
+    google.protobuf.Timestamp meeting_at_from = 4; // fromとtoはセットで必要 エラーは出ないけどクエリは無効になる
+    google.protobuf.Timestamp meeting_at_to = 5;
+    bool can_apply = 6; // trueにすると、応募可能な投稿のみを絞り込める。
+    enum OrderBy {
+      DESC = 0; // デフォルト
+      ASC = 1;
+    }
+    OrderBy order_by = 7 [(validate.rules).enum.defined_only = true];
+    enum SortBy {
+      CREATED_AT = 0; // デフォルト
+      MEETING_AT = 1;
+    }
+    SortBy sort_by = 8 [(validate.rules).enum.defined_only = true];
+    int64 user_id= 9; // ここに値が入っているとユーザーの投稿を絞り込める
+  }
+  Filter filter = 1 [(validate.rules).message.required = true];
+  int64 page_size = 2 [(validate.rules).int64.lte = 30]; // 30件以下。ゼロ値の場合、デフォルト設定で10件
+  string page_token = 3;
+}
+
+message ListPostsRes {
+  repeated Post posts = 1;
+  string next_page_token = 2;
+}
+
+message CreatePostReq {
+  oneof data{
+    option (validate.required) = true;
+
+    CreatePostReqInfo info = 1;
+    bool next_image_signal = 2 [(validate.rules).bool.const = true];
+    bytes image_chunk = 3 [(validate.rules).bytes = {max_len: 65536}]; // ~ 64KiB
+  }
+}
+
+message CreatePostReqInfo {
+  string title = 1 [(validate.rules).string = {min_len: 1, max_len: 20}]; // 20文字以下
+  string content = 2 [(validate.rules).string = {min_len: 1, max_len: 2000}]; // 2000文字以下
+  int64 fishing_spot_type_id = 3 [(validate.rules).int64 = {gte:1, lte: 4}]; // 1~4
+  repeated int64 fish_type_ids = 4 [(validate.rules).repeated = {min_items: 1, unique: true, items: {int64: {gte:1, lte: 95}}}]; // 1~95 一個以上 ユニーク
+  int64 prefecture_id = 5 [(validate.rules).int64 = {gte:1, lte: 47}]; // 1~47
+  string meeting_place_id = 6 [(validate.rules).string = {min_len: 27, max_len: 255}]; // google place ID, いまはサーバー側では叩かず保存して返すだけ。後々API叩く。
+  google.protobuf.Timestamp meeting_at = 7 [(validate.rules).timestamp.gt_now = true];
+  int64 max_apply = 8 [(validate.rules).int64.gte = 1];
+  int64 user_id= 9 [(validate.rules).int64.gte = 1];
+}
+
+message CreatePostRes {
+  Post post = 1;
+  string saga_id = 2;
+}
+
+message UpdatePostReqInfo  {
+  int64 id = 1 [(validate.rules).int64.gte = 1];
+  string title = 2 [(validate.rules).string = {min_len: 1, max_len: 20}];
+  string content = 3 [(validate.rules).string = {min_len: 1, max_len: 2000}];
+  int64 fishing_spot_type_id = 4 [(validate.rules).int64 = {gte:1, lte: 4}];
+  repeated int64 fish_type_ids = 5 [(validate.rules).repeated = {min_items: 1, unique: true, items: {int64: {gte:1, lte: 95}}}];
+  int64 prefecture_id = 6 [(validate.rules).int64 = {gte:1, lte: 47}];
+  string meeting_place_id = 7 [(validate.rules).string = {min_len: 27, max_len: 255}];
+  google.protobuf.Timestamp meeting_at = 8 [(validate.rules).timestamp.gt_now = true];
+  int64 max_apply = 9 [(validate.rules).int64.gte = 1];
+  repeated int64 image_ids_to_delete = 10 [(validate.rules).repeated = {min_items: 1, unique: true, items: {int64: {gte:1}}}];
+}
+
+message UpdatePostReq{
+  oneof data{
+    option (validate.required) = true;
+
+    UpdatePostReqInfo info = 1;
+    bool next_image_signal = 2 [(validate.rules).bool.const = true];
+    bytes image_chunk = 3;
+  }
+}
+
+message DeletePostReq {
+  int64 id = 1 [(validate.rules).int64.gte = 1];
+}
+
+message DeletePostRes {
+  bool success = 1;
+}
+
+message GetApplyPostReq  {
+  int64 id = 1 [(validate.rules).int64.gte = 1];
+}
+
+// one of 使える
+message ListApplyPostsReq {
+  message Filter {
+    int64 user_id = 1; 
+    int64 post_id = 2;
+  }
+  Filter filter = 1;
+}
+
+message ListApplyPostsRes {
+  repeated ApplyPost apply_posts = 1;
+}
+
+message BatchGetApplyPostsByPostIDsReq  {
+  repeated int64 post_ids = 1 [(validate.rules).repeated = {min_items: 1, unique: true, items: {int64: {gte:1}}}];
+}
+
+message BatchGetApplyPostsByPostIDsRes {
+  repeated ApplyPost apply_posts = 1;
+}
+
+message CreateApplyPostReq {
+  int64 post_id = 1 [(validate.rules).int64.gte = 1];
+  int64 user_id = 2 [(validate.rules).int64.gte = 1];
+}
+
+message DeleteApplyPostReq {
+  int64 id = 1 [(validate.rules).int64.gte = 1];
+}

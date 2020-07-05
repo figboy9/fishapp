@@ -1,0 +1,33 @@
+version: '3.4'
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: hot-reload
+    volumes:
+      - .:/app
+    environment:
+      TZ: Asia/Tokyo
+    ports:
+      - "8080:8080"
+    command: sh
+    tty: true
+    depends_on:
+      - nats-streaming
+
+  nats-streaming:
+    image: nats-streaming:latest
+    command: -p 4222 -m 8222 -cid fishapp-cluster -st FILE --dir /nats-streaming-data
+    ports:
+      - 8222:8222
+    volumes:
+      - nats-streaming-data:/nats-streaming-data
+
+volumes:
+  nats-streaming-data:
+  
+networks:
+  default:
+    external:
+      name: fishapp-net

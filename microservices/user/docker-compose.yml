@@ -1,0 +1,40 @@
+version: '3.4'
+services:
+  user:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+      target: hot-reload
+    volumes:
+      - .:/app
+    depends_on:
+      - user-db
+    tty: true
+
+  user-db:
+    image: mysql:5.7
+    volumes:
+      - user-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci 
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: user_DB
+    ports:
+      - "4306:3306"
+    
+
+  blacklist-kvs:
+    image: redis:5.0-alpine
+    tty: true
+    volumes:
+      - blacklist-data:/data
+    command: ["--requirepass", "password"]
+
+volumes:
+  user-data:
+  blacklist-data:
+
+networks:
+  default:
+    external:
+      name: fishapp-net

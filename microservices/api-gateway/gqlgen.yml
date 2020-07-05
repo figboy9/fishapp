@@ -1,0 +1,43 @@
+# gqlgenのコード生成用dockerコンテナ内のスキーマパス
+schema:
+  - schema/*.graphql
+
+exec:
+  filename: graph/generated/generated.go
+  package: generated
+
+model:
+  filename: graph/model/models_gen.go
+  package: model
+
+resolver:
+  layout: follow-schema
+  dir: graph
+  package: graph
+  type: resolver
+
+autobind:
+  - "github.com/ezio1119/fishapp-api-gateway/pb"
+
+models:
+  Sex:
+    model:
+      - "github.com/ezio1119/fishapp-api-gateway/graph/model.Sex"
+  OwnerType:
+    model:
+      - "github.com/ezio1119/fishapp-api-gateway/graph/model.OwnerType"
+  PostOrderBy:
+    model:
+      - "github.com/ezio1119/fishapp-api-gateway/graph/model.PostOrderBy"
+  PostSortBy:
+    model:
+      - "github.com/ezio1119/fishapp-api-gateway/graph/model.PostSortBy"
+  Time:
+    model:
+      - "github.com/ezio1119/fishapp-api-gateway/graph/scalar.TimeProto"
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int64
+  Int:
+    model:
+      - github.com/99designs/gqlgen/graphql.Int64

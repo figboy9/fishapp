@@ -1,0 +1,20 @@
+db:
+  dbms: mysql
+  name: image_DB
+  user: root
+  pass: password
+  net: tcp
+  host: image-db
+  port: 3306
+  parsetime: true
+  allowNativePasswords: true
+sv:
+  timeout: 10
+  port: 50051
+  debug: true
+  defaultPageSize: 10
+  devimagespath: images/
+  imageheight: 800
+  imagewidth: 600
+gcs:
+  bucketname: fishapp

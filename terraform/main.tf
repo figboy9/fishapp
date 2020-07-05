@@ -9,10 +9,11 @@ provider "google-beta" {
 }
 
 terraform {
-  backend "gcs" {}
+  backend "gcs" {
+    bucket = "fishapp-282106-tf-state-prod"
+    prefix = "terraform/state"
+  }
 }
-
-data "google_project" "fishapp_project" {}
 
 locals {
   fishapp_enable_services = [
@@ -33,7 +34,7 @@ resource "google_project_service" "fishapp_service" {
 }
 
 resource "google_storage_bucket" "tf_state" {
-  name               = "${data.google_project.fishapp_project.project_id}-tf-state-prod"
+  name               = "${var.project}-tf-state-prod"
   location           = "us-west1"
   storage_class      = "REGIONAL"
   bucket_policy_only = true
@@ -81,7 +82,7 @@ resource "google_container_cluster" "fishapp_cluster" {
   }
 
   workload_identity_config {
-    identity_namespace = "${data.google_project.fishapp_project.project_id}.svc.id.goog"
+    identity_namespace = "${var.project}.svc.id.goog"
   }
 }
 # 公式通りnode_configはnodeに書く
@@ -102,7 +103,7 @@ resource "google_container_node_pool" "fishapp_nodes" {
 
     oauth_scopes = [
       # Google APIへのアクセス制御はアプリケーション毎のサービスアカウントで行うため、oauth_scopesはすべて許可
-      # 参考: https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#best_practices
+      # https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#best_practices
       "https://www.googleapis.com/auth/cloud-platform",
     ]
   }

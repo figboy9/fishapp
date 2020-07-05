@@ -1,0 +1,5 @@
+Makefile
+tmp
+gqlgen.yml
+*.md
+docker-compose.yml

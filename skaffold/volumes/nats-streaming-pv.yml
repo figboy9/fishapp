@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nats-streaming-pv
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 1Gi
+  storageClassName: manual
+  hostPath:
+    path: /data/nats-streaming/
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nats-streaming-pvc
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  volumeName:  nats-streaming-pv

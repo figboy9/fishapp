@@ -1,0 +1,22 @@
+db:
+  dbms: mysql
+  name: post_DB
+  user: root
+  pass: password
+  net: tcp
+  host: post-db
+  port: 3306
+  parsetime: true
+  allowNativePasswords: true
+sv:
+  timeout: 10
+  port: 50051
+  debug: true
+  defaultPageSize: 10
+  imagechunksize: 16384
+nats:
+  url: "nats-streaming:4222"
+  clusterid: fishapp-cluster
+  queuegroup: fishapp-post
+api:
+  image_url: image:50051

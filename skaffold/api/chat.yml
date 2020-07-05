@@ -1,0 +1,50 @@
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: chat
+spec:
+  selector:
+    app: chat
+  ports:
+  - protocol: TCP
+    port: 50051
+    targetPort: 50051
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-deployment
+  labels:
+    app: chat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chat
+  template:
+    metadata:
+      labels:
+        app: chat
+    spec:
+      volumes:
+      - name: chat-db-sql
+        hostPath:
+          path: /microservices/chat/db/sql
+      initContainers:
+      - name: migration
+        image: migrate/migrate
+        args: ["-path", "/sql/", "-database", "mysql://root:password@tcp(chat-db-mysql:3306)/chat_DB", "up"]
+        volumeMounts:
+        - name: chat-db-sql
+          mountPath: /sql
+      containers:
+      - name: chat
+        image: chat
+        ports:
+        - containerPort: 50051
+        env:
+        - name: DB_HOST
+          value: chat-db-mysql
+        - name: KVS_HOST
+          value: chat-kvs-redis-master

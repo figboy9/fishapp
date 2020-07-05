@@ -1,0 +1,30 @@
+version: '3.4'
+services:
+  post:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: hot-reload
+    volumes:
+      - .:/app
+    depends_on:
+      - post-db
+  
+  post-db:
+    image: mysql:5.7
+    volumes:
+      - post-data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --log-bin=postdb.bin  --binlog-format=ROW --server-id=1
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: post_DB　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+    ports:
+      - "7306:3306"
+
+volumes:
+  post-data:
+
+networks:
+  default:
+    external:
+      name: fishapp-net

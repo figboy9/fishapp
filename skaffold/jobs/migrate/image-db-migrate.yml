@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  # Unique key of the Job instance
+  name: image-db-migration-job
+spec:
+  template:
+    metadata:
+      name: image-db-migration-job
+    spec:
+      volumes:
+      - name: image-db-sql
+        hostPath:
+          path: /microservices/image/db/sql
+      containers:
+      - name: migration
+        image: migrate/migrate
+        args: ["-path", "/sql/", "-database", "mysql://root:password@tcp(image-db-mysql:3306)/image_DB", "up"]
+        volumeMounts:
+        - name: image-db-sql
+          mountPath: /sql
+      restartPolicy: Never

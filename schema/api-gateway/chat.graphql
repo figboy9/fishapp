@@ -1,0 +1,58 @@
+directive @isMember on FIELD_DEFINITION
+
+extend type Query {
+  room(post_id: ID!): Room! @isMember @isAuthenticated # isAuthenticatedが先に発火
+}
+
+extend type Mutation {
+  createMessage(input: CreateMessageInput!): CreateMessagePayload! @isMember @isAuthenticated
+}
+
+extend type Subscription {
+  messageAdded(input: MessageAddedInput!): MessageAddedPayload! @isMember @isAuthenticated
+}
+
+extend type Room {
+  id: ID! 
+  post: Post!
+  messages: [Message!]
+  members: [Member!]!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type Member {
+  id: ID!
+  roomId: ID!
+  user: User!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type Message {
+  id: ID!
+  body: String
+  roomId: ID!
+  user: User!
+  image: Image
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+input CreateMessageInput {
+  body: String
+  roomId: ID!
+  image: Upload
+}
+
+type CreateMessagePayload {
+  message: Message!
+}
+
+input MessageAddedInput {
+  roomId: ID!
+}
+
+type MessageAddedPayload {
+  message: Message!
+}

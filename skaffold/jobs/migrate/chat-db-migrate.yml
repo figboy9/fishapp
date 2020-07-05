@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  # Unique key of the Job instance
+  name: chat-db-migration-job
+spec:
+  ttlSecondsAfterFinished: 0
+  template:
+    metadata:
+      name: chat-db-migration-job
+    spec:
+      volumes:
+      - name: chat-db-sql
+        hostPath:
+          path: /microservices/chat/db/sql
+      containers:
+      - name: migration
+        image: migrate/migrate
+        args: ["-path", "/sql/", "-database", "mysql://root:password@tcp(chat-db-mysql:3306)/chat_DB", "up"]
+        volumeMounts:
+        - name: chat-db-sql
+          mountPath: /sql
+      restartPolicy: Never
