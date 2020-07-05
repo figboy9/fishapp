@@ -25,11 +25,9 @@
     - [UserService](#user.UserService)
   
 - [chat.proto](#chat.proto)
-    - [CreateMemberReq](#chat.CreateMemberReq)
     - [CreateMessageReq](#chat.CreateMessageReq)
     - [CreateMessageReqInfo](#chat.CreateMessageReqInfo)
     - [CreateRoomReq](#chat.CreateRoomReq)
-    - [DeleteMemberReq](#chat.DeleteMemberReq)
     - [GetRoomReq](#chat.GetRoomReq)
     - [IsMemberReq](#chat.IsMemberReq)
     - [ListMembersReq](#chat.ListMembersReq)
@@ -374,7 +372,7 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| CurrentUser | [CurrentUserReq](#user.CurrentUserReq) | [User](#user.User) | require id_token |
+| CurrentUser | [CurrentUserReq](#user.CurrentUserReq) | [User](#user.User) | id_tokenを検証しUserを取得。emailも含まれる。 |
 | GetUser | [GetUserReq](#user.GetUserReq) | [User](#user.User) | no email field |
 | CreateUser | [CreateUserReq](#user.CreateUserReq) stream | [CreateUserRes](#user.CreateUserRes) |  |
 | UpdateUser | [UpdateUserReq](#user.UpdateUserReq) stream | [User](#user.User) | require id_token |
@@ -391,22 +389,6 @@
 <p align="right"><a href="#top">Top</a></p>
 
 ## chat.proto
-
-
-
-<a name="chat.CreateMemberReq"></a>
-
-### CreateMemberReq
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| room_id | [int64](#int64) |  |  |
-| user_id | [int64](#int64) |  |  |
-
-
-
 
 
 
@@ -452,22 +434,6 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | post_id | [int64](#int64) |  |  |
-| user_id | [int64](#int64) |  |  |
-
-
-
-
-
-
-<a name="chat.DeleteMemberReq"></a>
-
-### DeleteMemberReq
-
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| room_id | [int64](#int64) |  |  |
 | user_id | [int64](#int64) |  |  |
 
 
@@ -655,15 +621,13 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| GetRoom | [GetRoomReq](#chat.GetRoomReq) | [Room](#chat.Room) |  |
-| CreateRoom | [CreateRoomReq](#chat.CreateRoomReq) | [Room](#chat.Room) | user_idでcreateMemberもする |
-| IsMember | [IsMemberReq](#chat.IsMemberReq) | [.google.protobuf.BoolValue](#google.protobuf.BoolValue) | ユーザーがルームメンバーか確認。post_idからroomを取る |
-| ListMembers | [ListMembersReq](#chat.ListMembersReq) | [ListMembersRes](#chat.ListMembersRes) |  |
-| CreateMember | [CreateMemberReq](#chat.CreateMemberReq) | [Member](#chat.Member) |  |
-| DeleteMember | [DeleteMemberReq](#chat.DeleteMemberReq) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
-| ListMessages | [ListMessagesReq](#chat.ListMessagesReq) | [ListMessagesRes](#chat.ListMessagesRes) |  |
-| CreateMessage | [CreateMessageReq](#chat.CreateMessageReq) stream | [Message](#chat.Message) |  |
-| StreamMessage | [StreamMessageReq](#chat.StreamMessageReq) | [Message](#chat.Message) stream |  |
+| GetRoom | [GetRoomReq](#chat.GetRoomReq) | [Room](#chat.Room) | room_idかuser_idでRoomを取得。 |
+| CreateRoom | [CreateRoomReq](#chat.CreateRoomReq) | [Room](#chat.Room) | Roomを作成。受け取ったuser_idでMemberを作成。 |
+| IsMember | [IsMemberReq](#chat.IsMemberReq) | [.google.protobuf.BoolValue](#google.protobuf.BoolValue) | UserがRoomのMemberか確認。 |
+| ListMembers | [ListMembersReq](#chat.ListMembersReq) | [ListMembersRes](#chat.ListMembersRes) | RoomのMemberを取得。 |
+| ListMessages | [ListMessagesReq](#chat.ListMessagesReq) | [ListMessagesRes](#chat.ListMessagesRes) | RoomのMessageの一覧を取得。 |
+| CreateMessage | [CreateMessageReq](#chat.CreateMessageReq) stream | [Message](#chat.Message) | Messageを作成。 |
+| StreamMessage | [StreamMessageReq](#chat.StreamMessageReq) | [Message](#chat.Message) stream | RoomのMessageをサーバーサイドストリーミングで取得。 |
 
  
 
@@ -748,11 +712,11 @@
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [string](#string) |  |  |
-| event_type | [string](#string) |  |  |
-| aggregate_id | [string](#string) |  |  |
-| aggregate_type | [string](#string) |  |  |
-| event_data | [bytes](#bytes) |  |  |
-| channel | [string](#string) |  |  |
+| event_type | [string](#string) |  | 送るイベントのタイプ |
+| aggregate_id | [string](#string) |  | event_dataの集約のID |
+| aggregate_type | [string](#string) |  | event_dataの集約の名前 |
+| event_data | [bytes](#bytes) |  | 下記のRoomCreated, CreateRoomFailedなどをjson化したもの |
+| channel | [string](#string) |  | メッセージキューに送るチャネルの名前 |
 | created_at | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | updated_at | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
@@ -1337,11 +1301,11 @@ one of 使える
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | id | [string](#string) |  |  |
-| event_type | [string](#string) |  |  |
-| aggregate_id | [string](#string) |  |  |
-| aggregate_type | [string](#string) |  |  |
-| event_data | [bytes](#bytes) |  |  |
-| channel | [string](#string) |  |  |
+| event_type | [string](#string) |  | 送るイベントのタイプ |
+| aggregate_id | [string](#string) |  | event_dataの集約のID |
+| aggregate_type | [string](#string) |  | event_dataの集約の名前 |
+| event_data | [bytes](#bytes) |  | 下記のRoomCreated, CreateRoomFailedなどをjson化したもの |
+| channel | [string](#string) |  | メッセージキューに送るチャネルの名前 |
 | created_at | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | updated_at | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
@@ -1602,11 +1566,13 @@ one of 使える
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| ListImagesByOwnerID | [ListImagesByOwnerIDReq](#image.ListImagesByOwnerIDReq) | [ListImagesByOwnerIDRes](#image.ListImagesByOwnerIDRes) |  |
-| BatchCreateImages | [BatchCreateImagesReq](#image.BatchCreateImagesReq) stream | [BatchCreateImagesRes](#image.BatchCreateImagesRes) |  |
-| BatchDeleteImages | [BatchDeleteImagesReq](#image.BatchDeleteImagesReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | 削除するレコードがなくてもエラーなし |
-| BatchDeleteImagesByOwnerIDs | [BatchDeleteImagesByOwnerIDsReq](#image.BatchDeleteImagesByOwnerIDsReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | 削除するレコードがなくてもエラーなし |
-| DeleteImagesByOwnerID | [DeleteImagesByOwnerIDReq](#image.DeleteImagesByOwnerIDReq) | [.google.protobuf.Empty](#google.protobuf.Empty) |  |
+| ListImagesByOwnerID | [ListImagesByOwnerIDReq](#image.ListImagesByOwnerIDReq) | [ListImagesByOwnerIDRes](#image.ListImagesByOwnerIDRes) | owner_id, owner_typeに紐づくImageの一覧を取得 |
+| BatchCreateImages | [BatchCreateImagesReq](#image.BatchCreateImagesReq) stream | [BatchCreateImagesRes](#image.BatchCreateImagesRes) | ImageInfo, chunkのどちらかをストリームで受け取る。 ImageInfoが送られて来たら、次のイメージと判断。 |
+| BatchDeleteImages | [BatchDeleteImagesReq](#image.BatchDeleteImagesReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | ImageのIDの配列を受け取り、全て削除する 削除するレコードがなくてもエラーなし |
+| BatchDeleteImagesByOwnerIDs | [BatchDeleteImagesByOwnerIDsReq](#image.BatchDeleteImagesByOwnerIDsReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | owner_idを配列, owner_typeを受け取り、紐づくImageを全て削除。
+
+削除するレコードがなくてもエラーなし |
+| DeleteImagesByOwnerID | [DeleteImagesByOwnerIDReq](#image.DeleteImagesByOwnerIDReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | owner_id, owner_typeに紐づくImageを削除。 |
 
  
 
