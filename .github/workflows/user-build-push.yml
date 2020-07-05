@@ -1,4 +1,4 @@
-name: User Build and Publish to GCR
+name: User API Build and Publish to GCR
 
 on:
   push:
