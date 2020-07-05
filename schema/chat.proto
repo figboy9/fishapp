@@ -17,7 +17,7 @@ service ChatService {
 
   rpc ListMessages(ListMessagesReq) returns (ListMessagesRes);
   rpc CreateMessage(stream CreateMessageReq) returns (Message);
-  rpc StreamMessage(StreamMessageReq)returns (stream Message);
+  rpc StreamMessage(StreamMessageReq)returns (stream Message); // room_idのメッセージをストリームで受け取る
 }
 
 message Room {
