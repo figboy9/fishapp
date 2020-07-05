@@ -11,13 +11,14 @@ env:
   GCP_PROJECT: fishapp-282106
   GCP_REGION: asia-northeast1
   GCP_ZONE: asia-northeast1-a
-  GCS_BUCKET_TF: fishapp-282106-tf-state-prod
-  GCS_PREFIX_TF: terraform/state
 
 jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/chat
     steps:
     - uses: actions/checkout@v2
 
@@ -31,6 +32,6 @@ jobs:
         -v $PWD/credentials.json:/credentials.json \
         -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
         hashicorp/terraform:light sh -c " \
-        terraform init -backend-config='bucket=$GCS_BUCKET_TF' -backend-config='prefix=$GCS_PREFIX_TF' && \
+        terraform init && \
         terraform fmt -check && \
         terraform plan -no-color -var 'project=$GCP_PROJECT' -var 'region=$GCP_REGION' -var 'location=$GCP_ZONE' "

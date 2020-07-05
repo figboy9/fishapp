@@ -1,20 +1,23 @@
-name: Build and Publish to GCR
+name: Chat Build and Publish to GCR
 
 on:
   push:
     paths:
-    - 'microservices/api-gateway/**'
+    - 'microservices/chat/**'
     branches:
     - master
 
 env:
   GCP_PROJECT: fishapp-282106
-  IMAGE: api-gateway
+  IMAGE: chat
 
 jobs:
   setup-build-publish:
     name: Setup, Build, Publish
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microservices/chat
     steps:
     - uses: actions/checkout@v2
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
