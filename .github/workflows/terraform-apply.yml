@@ -28,7 +28,7 @@ jobs:
     - name: apply
       run: |
         docker run --rm --entrypoint "" -w /terraform \
-        -v $PWD/terraform:/terraform \
+        -v $PWD:/terraform \
         -e GOOGLE_APPLICATION_CREDENTIALS=/terraform/credentials.json \
         hashicorp/terraform:light sh -c " \
         terraform init && \
