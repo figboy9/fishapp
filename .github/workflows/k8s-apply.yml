@@ -23,13 +23,15 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Generate credentials.json from secrets
-      run: echo ${{ secrets.KUBECTL_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+      run: |
+        mkdir credentials
+        echo ${{ secrets.KUBECTL_SA_KEY }} | base64 -d | tee ./credentials/credentials.json >/dev/null
 
     - name: Kubesec decryption
       run: |
         docker run --rm -w /work \
         -v $PWD:/work \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/work/credentials.json \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/work/credentials/credentials.json \
         ezio1119/kubesec sh -c " \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
         kubesec decrypt -i api/chat/chat-db-secret.yml && \
@@ -49,6 +51,6 @@ jobs:
         -e CLOUDSDK_CORE_PROJECT=$GCP_PROJECT \
         -e CLOUDSDK_COMPUTE_ZONE=$GCP_ZONE \
         ezio1119/cloud-sdk-kubectl-helm sh -c " \
-        gcloud auth activate-service-account --key-file=credentials.json && \
+        gcloud auth activate-service-account --key-file=credentials/credentials.json && \
         gcloud container clusters get-credentials $GKE_CLUSTER && \
         kubectl apply -f . --recursive"
