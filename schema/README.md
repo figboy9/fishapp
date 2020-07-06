@@ -372,14 +372,14 @@
 
 | Method Name | Request Type | Response Type | Description |
 | ----------- | ------------ | ------------- | ------------|
-| CurrentUser | [CurrentUserReq](#user.CurrentUserReq) | [User](#user.User) | id_tokenを検証しUserを取得。emailも含まれる。 |
-| GetUser | [GetUserReq](#user.GetUserReq) | [User](#user.User) | no email field |
-| CreateUser | [CreateUserReq](#user.CreateUserReq) stream | [CreateUserRes](#user.CreateUserRes) |  |
-| UpdateUser | [UpdateUserReq](#user.UpdateUserReq) stream | [User](#user.User) | require id_token |
-| UpdatePassword | [UpdatePasswordReq](#user.UpdatePasswordReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | require id_token |
-| Login | [LoginReq](#user.LoginReq) | [LoginRes](#user.LoginRes) |  |
-| Logout | [LogoutReq](#user.LogoutReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | require refresh_token |
-| RefreshIDToken | [RefreshIDTokenReq](#user.RefreshIDTokenReq) | [RefreshIDTokenRes](#user.RefreshIDTokenRes) | require refresh_token |
+| CurrentUser | [CurrentUserReq](#user.CurrentUserReq) | [User](#user.User) | id_tokenを検証しUserを取得。emailフィールドも含まれる。 |
+| GetUser | [GetUserReq](#user.GetUserReq) | [User](#user.User) | Userを取得。emailフィールドは含まれない。 |
+| CreateUser | [CreateUserReq](#user.CreateUserReq) stream | [CreateUserRes](#user.CreateUserRes) | Userを作成。 |
+| UpdateUser | [UpdateUserReq](#user.UpdateUserReq) stream | [User](#user.User) | Userを更新。id_tokenが必要。 |
+| UpdatePassword | [UpdatePasswordReq](#user.UpdatePasswordReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | Userのpasswordを更新。id_tokenが必要。 |
+| Login | [LoginReq](#user.LoginReq) | [LoginRes](#user.LoginRes) | 認証してトークンペアを返す。 |
+| Logout | [LogoutReq](#user.LogoutReq) | [.google.protobuf.Empty](#google.protobuf.Empty) | refresh_tokenをトークンブラックリストに登録。 |
+| RefreshIDToken | [RefreshIDTokenReq](#user.RefreshIDTokenReq) | [RefreshIDTokenRes](#user.RefreshIDTokenRes) | トークンを更新する。 refresh_tokenが必要。古いrefresh_tokenはブラックリストに登録。 |
 
  
 
