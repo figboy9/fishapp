@@ -92,3 +92,4 @@ spec:
             secretKeyRef:
               name: user-secret
               key: jwt.public.key
+
