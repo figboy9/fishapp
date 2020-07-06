@@ -17,7 +17,7 @@ services:
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --log-bin=postdb.bin  --binlog-format=ROW --server-id=1
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: post_DB　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　
+      MYSQL_DATABASE: post_DB
     ports:
       - "7306:3306"
 
