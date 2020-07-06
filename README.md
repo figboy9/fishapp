@@ -37,3 +37,4 @@
 - Event driven pattern
 - Saga pattern
 
+![Alt text](./doc/images/gcp.svg)
