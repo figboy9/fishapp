@@ -52,4 +52,4 @@ jobs:
         gcloud auth activate-service-account --key-file=credentials.json && \
         rm credentials.json && \
         gcloud container clusters get-credentials $GKE_CLUSTER && \
-        kubectl apply -f . --recursive"
+        kubectl apply -f . -R"

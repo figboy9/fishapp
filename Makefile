@@ -14,7 +14,7 @@ terra:
 # gcloud, kubectl, helm入りのdocker image
 kubectl:
 	docker run -it --rm --name kubectl -w /k8s \
-	-v $(PWD):/k8s \
+	-v $(PWD)/k8s:/k8s \
 	-v $(GCP_KUBECTL_KEY):/credentials.json \
 	-e CLOUDSDK_CORE_PROJECT=$(GCP_PROJECT) \
 	-e CLOUDSDK_COMPUTE_ZONE=$(GCP_ZONE) \
