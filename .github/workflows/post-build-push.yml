@@ -3,7 +3,8 @@ name: Post API Build and Publish to GCR
 on:
   push:
     paths:
-    - 'microservices/post/**'
+    - 'microservices/post/**.go'
+    - 'microservices/post/**/conf.yml'
     branches:
     - master
 
