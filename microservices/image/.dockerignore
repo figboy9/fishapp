@@ -2,6 +2,6 @@ Makefile
 tmp
 gqlgen.yml
 *.md
- 
+db
 docker-compose.yml
 images
