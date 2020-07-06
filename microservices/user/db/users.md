@@ -7,17 +7,17 @@
 
 ```sql
 CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
-  `encrypted_password` varchar(255) COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
-  `introduction` text COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
-  `sex` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `encrypted_password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `introduction` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sex` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_ja_0900_as_cs
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ```
 
 </details>
@@ -26,12 +26,12 @@ CREATE TABLE `users` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
+| id | int(11) |  | false |  |  |  |
 | email | varchar(255) |  | false |  |  |  |
 | encrypted_password | varchar(255) |  | false |  |  |  |
 | name | varchar(255) |  | false |  |  |  |
 | introduction | text |  | false |  |  |  |
-| sex | int |  | false |  |  |  |
+| sex | int(11) |  | false |  |  |  |
 | created_at | datetime |  | false |  |  |  |
 | updated_at | datetime |  | false |  |  |  |
 
