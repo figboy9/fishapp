@@ -16,6 +16,9 @@ jobs:
   apply-manifest:
     name: Apply manifest
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: k8s
     steps:
     - uses: actions/checkout@v2
 
@@ -25,9 +28,8 @@ jobs:
     - name: Kubesec decryption
       run: |
         docker run --rm -w /work \
-        -v $PWD/credentials.json:/credentials.json \
-        -v $PWD/k8s:/work \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+        -v $PWD:/work \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/work/credentials.json \
         ezio1119/kubesec sh -c " \
         kubesec decrypt -i api/api-gateway/api-gateway-secret.yml && \
         kubesec decrypt -i api/chat/chat-db-secret.yml && \
@@ -43,11 +45,10 @@ jobs:
     - name: Apply manifest
       run: |
         docker run --rm -w /k8s \
-        -v $PWD/k8s:/k8s \
-        -v $PWD/credentials.json:/credentials.json \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+        -v $PWD:/k8s \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/k8s/credentials.json \
         ezio1119/cloud-sdk-kubectl-helm sh -c " \
-        gcloud auth activate-service-account --key-file=/credentials.json && \
+        gcloud auth activate-service-account --key-file=credentials.json && \
         gcloud config set project $GCP_PROJECT && \
         gcloud config set compute/zone $GCP_ZONE && \
         gcloud container clusters get-credentials $GKE_CLUSTER && \
