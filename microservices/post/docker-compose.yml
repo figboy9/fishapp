@@ -18,8 +18,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: post_DB
-    ports:
-      - "7306:3306"
+    # ports:
+    #   - "7306:3306"
 
 volumes:
   post-data:

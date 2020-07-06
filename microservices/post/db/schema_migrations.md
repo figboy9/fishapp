@@ -7,10 +7,10 @@
 
 ```sql
 CREATE TABLE `schema_migrations` (
-  `version` bigint NOT NULL,
+  `version` bigint(20) NOT NULL,
   `dirty` tinyint(1) NOT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_ja_0900_as_cs
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ```
 
 </details>
@@ -19,7 +19,7 @@ CREATE TABLE `schema_migrations` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| version | bigint |  | false |  |  |  |
+| version | bigint(20) |  | false |  |  |  |
 | dirty | tinyint(1) |  | false |  |  |  |
 
 ## Constraints

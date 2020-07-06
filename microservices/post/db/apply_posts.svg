@@ -19,13 +19,13 @@
 <text text-anchor="start" x="167" y="-679.1" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="69,-636.5 69,-665.5 265,-665.5 265,-636.5 69,-636.5"/>
 <text text-anchor="start" x="76" y="-648.3" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="99" y="-648.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="99" y="-648.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="69,-607.5 69,-636.5 265,-636.5 265,-607.5 69,-607.5"/>
 <text text-anchor="start" x="76" y="-619.3" font-family="Arial" font-size="14.00" fill="#000000">post_id </text>
-<text text-anchor="start" x="137" y="-619.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="137" y="-619.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="69,-578.5 69,-607.5 265,-607.5 265,-578.5 69,-578.5"/>
 <text text-anchor="start" x="76" y="-590.3" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
-<text text-anchor="start" x="137" y="-590.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="137" y="-590.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="69,-549.5 69,-578.5 265,-578.5 265,-549.5 69,-549.5"/>
 <text text-anchor="start" x="76" y="-561.3" font-family="Arial" font-size="14.00" fill="#000000">created_at </text>
 <text text-anchor="start" x="159" y="-561.3" font-family="Arial" font-size="14.00" fill="#666666">[datetime]</text>
@@ -44,7 +44,7 @@
 <text text-anchor="start" x="144.5" y="-375.1" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="43,-332.5 43,-361.5 291,-361.5 291,-332.5 43,-332.5"/>
 <text text-anchor="start" x="50" y="-344.3" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="73" y="-344.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="73" y="-344.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="43,-303.5 43,-332.5 291,-332.5 291,-303.5 43,-303.5"/>
 <text text-anchor="start" x="50" y="-315.3" font-family="Arial" font-size="14.00" fill="#000000">title </text>
 <text text-anchor="start" x="96" y="-315.3" font-family="Arial" font-size="14.00" fill="#666666">[varchar(255)]</text>
@@ -53,10 +53,10 @@
 <text text-anchor="start" x="111" y="-286.3" font-family="Arial" font-size="14.00" fill="#666666">[varchar(5000)]</text>
 <polygon fill="none" stroke="#000000" points="43,-245.5 43,-274.5 291,-274.5 291,-245.5 43,-245.5"/>
 <text text-anchor="start" x="50" y="-257.3" font-family="Arial" font-size="14.00" fill="#000000">fishing_spot_type_id </text>
-<text text-anchor="start" x="208" y="-257.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="208" y="-257.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="43,-216.5 43,-245.5 291,-245.5 291,-216.5 43,-216.5"/>
 <text text-anchor="start" x="50" y="-228.3" font-family="Arial" font-size="14.00" fill="#000000">prefecture_id </text>
-<text text-anchor="start" x="156" y="-228.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="156" y="-228.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="43,-187.5 43,-216.5 291,-216.5 291,-187.5 43,-187.5"/>
 <text text-anchor="start" x="50" y="-199.3" font-family="Arial" font-size="14.00" fill="#000000">meeting_place_id </text>
 <text text-anchor="start" x="178" y="-199.3" font-family="Arial" font-size="14.00" fill="#666666">[varchar(255)]</text>
@@ -65,10 +65,10 @@
 <text text-anchor="start" x="133" y="-170.3" font-family="Arial" font-size="14.00" fill="#666666">[datetime]</text>
 <polygon fill="none" stroke="#000000" points="43,-129.5 43,-158.5 291,-158.5 291,-129.5 43,-129.5"/>
 <text text-anchor="start" x="50" y="-141.3" font-family="Arial" font-size="14.00" fill="#000000">max_apply </text>
-<text text-anchor="start" x="126" y="-141.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="126" y="-141.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="43,-100.5 43,-129.5 291,-129.5 291,-100.5 43,-100.5"/>
 <text text-anchor="start" x="50" y="-112.3" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
-<text text-anchor="start" x="111" y="-112.3" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="111" y="-112.3" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
 <polygon fill="none" stroke="#000000" points="43,-71.5 43,-100.5 291,-100.5 291,-71.5 43,-71.5"/>
 <text text-anchor="start" x="50" y="-83.3" font-family="Arial" font-size="14.00" fill="#000000">created_at </text>
 <text text-anchor="start" x="133" y="-83.3" font-family="Arial" font-size="14.00" fill="#666666">[datetime]</text>

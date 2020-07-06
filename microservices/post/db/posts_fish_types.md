@@ -7,15 +7,15 @@
 
 ```sql
 CREATE TABLE `posts_fish_types` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `post_id` int NOT NULL,
-  `fish_type_id` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL,
+  `fish_type_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `post_id` (`post_id`,`fish_type_id`),
   CONSTRAINT `posts_fish_types_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_ja_0900_as_cs
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ```
 
 </details>
@@ -24,9 +24,9 @@ CREATE TABLE `posts_fish_types` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
-| post_id | int |  | false |  | [posts](posts.md) |  |
-| fish_type_id | int |  | false |  |  |  |
+| id | int(11) |  | false |  |  |  |
+| post_id | int(11) |  | false |  | [posts](posts.md) |  |
+| fish_type_id | int(11) |  | false |  |  |  |
 | created_at | datetime |  | false |  |  |  |
 | updated_at | datetime |  | false |  |  |  |
 
@@ -34,8 +34,8 @@ CREATE TABLE `posts_fish_types` (
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| post_id | UNIQUE | UNIQUE KEY post_id (post_id, fish_type_id) |
 | posts_fish_types_ibfk_1 | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts (id) |
+| post_id | UNIQUE | UNIQUE KEY post_id (post_id, fish_type_id) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 
 ## Indexes

@@ -19,7 +19,7 @@
 <text text-anchor="start" x="189.5" y="-117.6" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="46.5,-75 46.5,-104 287.5,-104 287.5,-75 46.5,-75"/>
 <text text-anchor="start" x="53.5" y="-86.8" font-family="Arial" font-size="14.00" fill="#000000">version </text>
-<text text-anchor="start" x="114.5" y="-86.8" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<text text-anchor="start" x="114.5" y="-86.8" font-family="Arial" font-size="14.00" fill="#666666">[bigint(20)]</text>
 <polygon fill="none" stroke="#000000" points="46.5,-46 46.5,-75 287.5,-75 287.5,-46 46.5,-46"/>
 <text text-anchor="start" x="53.5" y="-57.8" font-family="Arial" font-size="14.00" fill="#000000">dirty </text>
 <text text-anchor="start" x="99.5" y="-57.8" font-family="Arial" font-size="14.00" fill="#666666">[tinyint(1)]</text>
