@@ -21,8 +21,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: chat_DB
-    ports:
-      - "5306:3306"
+    # ports:
+    #   - "5306:3306"
 
   chat-kvs:
     image: redis:5.0-alpine

@@ -7,16 +7,16 @@
 
 ```sql
 CREATE TABLE `messages` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `body` varchar(255) COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
-  `room_id` int NOT NULL,
-  `user_id` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `body` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `room_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `room_id` (`room_id`),
   CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_ja_0900_as_cs
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ```
 
 </details>
@@ -25,10 +25,10 @@ CREATE TABLE `messages` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
+| id | int(11) |  | false |  |  |  |
 | body | varchar(255) |  | false |  |  |  |
-| room_id | int |  | false |  | [rooms](rooms.md) |  |
-| user_id | int |  | false |  |  |  |
+| room_id | int(11) |  | false |  | [rooms](rooms.md) |  |
+| user_id | int(11) |  | false |  |  |  |
 | created_at | datetime |  | false |  |  |  |
 | updated_at | datetime |  | false |  |  |  |
 
