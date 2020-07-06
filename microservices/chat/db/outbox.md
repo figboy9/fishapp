@@ -7,16 +7,16 @@
 
 ```sql
 CREATE TABLE `outbox` (
-  `id` varchar(255) COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
-  `event_type` varchar(255) COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `event_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `event_data` json NOT NULL,
-  `aggregate_id` varchar(255) COLLATE utf8mb4_ja_0900_as_cs DEFAULT NULL,
-  `aggregate_type` varchar(255) COLLATE utf8mb4_ja_0900_as_cs DEFAULT NULL,
-  `channel` varchar(255) COLLATE utf8mb4_ja_0900_as_cs NOT NULL,
+  `aggregate_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `aggregate_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `channel` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_ja_0900_as_cs
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 ```
 
 </details>

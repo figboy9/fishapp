@@ -2,7 +2,7 @@ PJT_NAME = $(notdir $(PWD))
 SCHEMA_PATH = $$(dirname $$(dirname $$(pwd)))/schema
 NET = fishapp-net
 SVC = chat
-DB_SVC = chat
+DB_SVC = chat-db
 DB_NAME = chat_DB
 GRPC_SVC = ChatService
 
@@ -21,11 +21,6 @@ cli:
 newsql:
 	docker run --rm --name newsql -v $(PWD)/db/sql:/sql \
 	migrate/migrate:latest create -ext sql -dir ./sql ${a}
-
-migrate:
-	docker run --rm --name migrate --net $(NET) \
-	-v $(PWD)/db/sql:/sql migrate/migrate:latest \
-	-path /sql/ -database "mysql://root:password@tcp($(DB_SVC):3306)/$(DB_NAME)" $(MIGRATE)
 
 test:
 	docker-compose  exec $(SVC) sh -c "go test -v -coverprofile=cover.out ./... && \
@@ -51,6 +46,7 @@ up:
 
 updb:
 	docker-compose up -d $(DB_SVC)
+
 build:
 	docker-compose build $(SVC)
 

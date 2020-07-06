@@ -27,11 +27,6 @@ cli:
 	docker run --rm --name grpc_cli --net $(NET) znly/grpc_cli \
 	call $(SVC):50051 $(SVC).$(GRPC_SVC).$(m) "$(q)"
 
-migrate:
-	docker run --rm --name migrate --net $(NET) \
-	-v $(PWD)/db/sql:/sql migrate/migrate:latest \
-	-path /sql/ -database "mysql://root:password@tcp($(DB_SVC):3306)/$(DB_NAME)" $(MIGRATE)
-
 waitdb: updb
 	docker run --rm --name dockerize --net $(NET) jwilder/dockerize \
 	-timeout 60s \
