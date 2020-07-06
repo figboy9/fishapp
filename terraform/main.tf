@@ -23,6 +23,7 @@ locals {
     "container.googleapis.com",
     "dns.googleapis.com",
     "cloudkms.googleapis.com",
+    "sqladmin.googleapis.com",
   ]
 }
 

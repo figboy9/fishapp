@@ -1,0 +1,28 @@
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMServiceAccount
+metadata:
+  name: fishapp-user-api-account
+spec:
+  displayName: '[Config Connector] User API Account'
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMServiceAccountKey
+metadata:
+  name: fishapp-user-api-account-key
+spec:
+  serviceAccountRef:
+    name: fishapp-user-api-account
+---
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPolicyMember
+metadata:
+  name: fishapp-user-api-sql-client
+spec:
+  member: serviceAccount:fishapp-user-api-account@fishapp-282106.iam.gserviceaccount.com
+  role: roles/cloudsql.client
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    kind: Project
+    external: projects/fishapp-282106
+---
