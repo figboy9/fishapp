@@ -3,7 +3,8 @@ name: Relaylog API Build and Publish to GCR
 on:
   push:
     paths:
-    - 'microservices/relaylog/**'
+    - 'microservices/relaylog/**.go'
+    - 'microservices/relaylog/**/conf.yml'
     branches:
     - master
 

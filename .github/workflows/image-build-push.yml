@@ -3,7 +3,8 @@ name: Image API Build and Publish to GCR
 on:
   push:
     paths:
-    - 'microservices/image/**'
+    - 'microservices/image/**.go'
+    - 'microservices/image/**/conf.yml'
     branches:
     - master
 
