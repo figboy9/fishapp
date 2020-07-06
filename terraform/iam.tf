@@ -17,6 +17,7 @@ locals {
 
   fishapp_config_connector_roles = [
     "roles/editor",
+    "roles/iam.securityAdmin",
   ]
 }
 

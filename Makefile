@@ -3,6 +3,8 @@ GCP_KUBECTL_KEY = ~/.ssh/gcp/fishapp/kubectl.json
 GCP_PROJECT = fishapp-282106
 GCP_ZONE = asia-northeast1-a
 GCP_CLUSTER = fishapp-cluster
+INSTANCE_CONNECTION_NAME = fishapp-282106:asia-northeast1:user-db
+
 
 terra:
 	docker run -it --rm --name terra --entrypoint sh -w /terraform \
@@ -29,4 +31,11 @@ kubesec:
 	-e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
 	ezio1119/kubesec
 
-.PHONY: kubesec kubectl terra
+proxy:
+	docker run --rm -d --name proxy \
+	-v $(GCP_TERRA_KEY):/config \
+	-p 9306:3306 \
+	gcr.io/cloudsql-docker/gce-proxy:1.17 \
+	/cloud_sql_proxy -instances=$(INSTANCE_CONNECTION_NAME)=tcp:0.0.0.0:3306 -credential_file=/config
+
+.PHONY: kubesec kubectl terra proxy
