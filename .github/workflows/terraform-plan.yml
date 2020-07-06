@@ -23,13 +23,15 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Generate credentials.json from secrets
-      run: echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials.json >/dev/null
+      run: |
+        mkdir credentials
+        echo ${{ secrets.TF_SA_KEY }} | base64 -d | tee ./credentials/credentials.json >/dev/null
 
     - name: plan
       run: |
         docker run --rm --entrypoint "" -w /terraform \
         -v $PWD:/terraform \
-        -e GOOGLE_APPLICATION_CREDENTIALS=/terraform/credentials.json \
+        -e GOOGLE_APPLICATION_CREDENTIALS=/terraform/credentials/credentials.json \
         hashicorp/terraform:light sh -c " \
         terraform init && \
         terraform fmt -check && \

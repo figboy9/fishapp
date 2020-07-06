@@ -78,3 +78,4 @@ resource "google_service_account_iam_member" "fishapp_GSA_to_KSA_iam" {
 
   member = "serviceAccount:${var.project}.svc.id.goog[cnrm-system/cnrm-controller-manager-${var.k8s_namespace}]"
 }
+
