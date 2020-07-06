@@ -34,8 +34,25 @@ test:
 	go tool cover -html=cover.out -o ./cover.html" && \
 	open ./src/cover.html
 
+waitdb: updb
+	docker run --rm --name dockerize --net $(NET) jwilder/dockerize \
+	-timeout 60s \
+	-wait tcp://$(DB_SVC):3306
+
+migrate: waitdb
+	docker run --rm --name migrate --net $(NET) \
+	-v $(PWD)/db/sql:/sql migrate/migrate:latest \
+	-path /sql/ -database "mysql://root:password@tcp($(DB_SVC):3306)/$(DB_NAME)" $(MIGRATE)
+
+sqldoc: migrate
+	docker run --rm --name tbls --net $(NET) -v $(PWD)/db:/work ezio1119/tbls \
+	doc -f -t svg mysql://root:password@$(DB_SVC):3306/$(DB_NAME) ./
+
 up:
 	docker-compose up -d
+
+updb:
+	docker-compose up -d $(DB_SVC)
 
 build:
 	docker-compose build

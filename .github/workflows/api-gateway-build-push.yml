@@ -3,7 +3,8 @@ name: Api-gateway Build and Publish to GCR
 on:
   push:
     paths:
-    - 'microservices/api-gateway/**'
+    - 'microservices/api-gateway/**.go'
+    - 'microservices/api-gateway/**/conf.yml'
     branches:
     - master
 

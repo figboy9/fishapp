@@ -3,7 +3,8 @@ name: Chat API Build and Publish to GCR
 on:
   push:
     paths:
-    - 'microservices/chat/**'
+    - 'microservices/chat/**.go'
+    - 'microservices/chat/**/conf.yml'
     branches:
     - master
 

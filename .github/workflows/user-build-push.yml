@@ -3,7 +3,8 @@ name: User API Build and Publish to GCR
 on:
   push:
     paths:
-    - 'microservices/user/**'
+    - 'microservices/user/**.go'
+    - 'microservices/user/**/conf.yml'
     branches:
     - master
 
