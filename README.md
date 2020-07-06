@@ -1,4 +1,4 @@
-## 使用技術
+## 【使用技術】
 
 - アプリケーション
   - Golang
@@ -15,15 +15,18 @@
     - Minikube
     - Helm
     - Skaffold
-    - docker-compose
+    - Docker/docker-compose
   - 本番
-    - GKE
+    - GCP
+      - Cloud SQL
+      - Cloud Storage
+      - Container Registry
+      - Cloud DNS
+      - Config Connector
     - Helm
     - Kubernetes Operator
-    - GCS
-    - Cloud SQL
     - Terraform
-    - GCP Config Connector
+    
   - CI/CD
     - Github Actions
 
