@@ -27,7 +27,8 @@
   - CI/CD
     - Github Actions
 
-## アプリケーションアーキテクチャ
+## アーキテクチャ
+- Clean Architecture
 - Microservices pattern
 - Api-gateway pattern
 - Event driven pattern

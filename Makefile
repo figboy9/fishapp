@@ -16,11 +16,10 @@ kubectl:
 	docker run -it --rm --name kubectl -w /k8s \
 	-v $(PWD):/k8s \
 	-v $(GCP_KUBECTL_KEY):/credentials.json \
-	-e GOOGLE_APPLICATION_CREDENTIALS=/credentials.json \
+	-e CLOUDSDK_CORE_PROJECT=$(GCP_PROJECT) \
+	-e CLOUDSDK_COMPUTE_ZONE=$(GCP_ZONE) \
 	ezio1119/cloud-sdk-kubectl-helm sh -c " \
 	gcloud auth activate-service-account --key-file=/credentials.json && \
-	gcloud config set project $(GCP_PROJECT) && \
-	gcloud config set compute/zone $(GCP_ZONE) && \
 	gcloud container clusters get-credentials $(GCP_CLUSTER) && sh"
 
 kubesec:
