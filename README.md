@@ -1,31 +1,60 @@
 ## [WIP]fishapp
 釣りに一緒に行く人を探せるアプリです。掲示板形式で、釣り場所や時間を指定して投稿できます。
 
-釣りをしたいけどやり方がわからない、一歩を踏み出せない人と、経験者だけど誰かと一緒に釣りしたい！って人をマッチングできたらいいなって思います。
+釣りをしたいけどやり方がわからない、一歩を踏み出せない人と、経験者だけど誰かと一緒に釣りしたい！って人をマッチングできたらいいなと思い作りました。
 
-Cloud NativeやMicroservicesに興味を持ち勉強のため作りました。
-友達と共同開発し友達はフロント、僕はサーバー、インフラを担当しています(開発中)。
+Cloud NativeやMicroservicesに興味を持ち勉強しています。友達と共同開発し友達はフロント、僕はサーバー、インフラを担当しています(開発中)。
 
 api-gatewayをGraphQLで実装しバックにgRPC通信、イベント駆動のマイクロサービスが5個あります。
 
-monorepoでprotobufやGraphQLのスキーマは./schemaにあります。
+protobufやGraphQLのスキーマは[schema](/schema/README.md)にあり、バックエンドは全てGolangでClean Architectureで実装しています。
 
-バックエンドは全てGolangでClean Architectureで実装しています。
+インフラはGKEでterraformでクラスタを作成しており、GCPのConfig ConnectorでKubernetes上でGCPリソースを作成しています。画像のバケットを作成したり、Cloud SQLを作成したり、それらにアクセスするサービスアカウント(GCP)を作成しています。
 
-インフラはGKEでterraformでクラスタを作成しています。
+本番のMySQL, Redis, NatsにKubernetes Operatorを使っており、イメージのビルド、プッシュ、terraformやk8sのマニフェストの適用は、Github Actions上で行っています。secretはローカルでkubesecで暗号化し、Github Actions上で復号化しています。また、スキーマドキュメントの生成などもGithub Actionsで行っています。
 
-GCPのConfig ConnectorでKubernetes上でGCPリソースを作成したりもしています。画像のバケットを作成したり、Cloud SQLを作成したり、それらにアクセスするサービスアカウント(GCP)を作成したりなどしています。
+# 【使用技術】
 
-本番のMySQL, Redis, NatsにKubernetes Operatorを使ってます。
+- アプリケーション
+  - Golang
+  - GraphQL
+  - gRPC
+  - JWT
+  - ミドルウェア
+    - Redis
+    - MySQL
+    - Nats Streaming
+- インフラ
+  - 開発
+    - Kubernetes
+    - Minikube
+    - Helm
+    - Skaffold
+    - Docker/docker-compose
+  - 本番
+    - GCP
+      - Cloud SQL
+      - Cloud Storage
+      - Container Registry
+      - Cloud DNS
+      - Config Connector
+    - Helm
+    - Kubernetes Operator
+    - Terraform
+    
+  - CI/CD
+    - Github Actions
 
-イメージのビルド、プッシュ、terraformやk8sのマニフェストの適用は、Github Actions上で行っています。
-secretはローカルでkubesecで暗号化し、Github Actions上で復号化しています。
+## アーキテクチャ
+- Clean Architecture
+- Microservices pattern
+- Api-gateway pattern
+- Event driven pattern
+- Saga pattern
 
-スキーマドキュメントの生成などもGithub Actionsで行っています。
+![Alt text](./doc/images/gcp.svg)
 
-一番下に使用技術一覧があります。
-
-### api-gateway API
+<!-- ### api-gateway API
 #### 機能
 - 参照系クエリの集約
 - dataloaderを使った参照系クエリの集約
@@ -41,7 +70,7 @@ JWTのパブリックキーを持っており、トークンの発行はでき�
 
 なるべくビジネスロジックを持たないように実装しました。
 
-<!-- 特に複数APIのリソースの更新が必要な場合 -->
+特に複数APIのリソースの更新が必要な場合
 ### user API
 #### 機能
 - 現在のユーザー情報取得(ID Tokenが必要)
@@ -125,43 +154,3 @@ outbox patternのrelaylogです。
 outbox patternはイベントをデータベースに保存することで発行できるので、集約の永続化と、イベントの発行を同じトランザクションでできます。
 
 イベントはprotobufで定義し、json化してパブリッシュしています。
-## 【使用技術】
-
-- アプリケーション
-  - Golang
-  - GraphQL
-  - gRPC
-  - JWT
-  - ミドルウェア
-    - Redis
-    - MySQL
-    - Nats Streaming
-- インフラ
-  - 開発
-    - Kubernetes
-    - Minikube
-    - Helm
-    - Skaffold
-    - Docker/docker-compose
-  - 本番
-    - GCP
-      - Cloud SQL
-      - Cloud Storage
-      - Container Registry
-      - Cloud DNS
-      - Config Connector
-    - Helm
-    - Kubernetes Operator
-    - Terraform
-    
-  - CI/CD
-    - Github Actions
-
-## アーキテクチャ
-- Clean Architecture
-- Microservices pattern
-- Api-gateway pattern
-- Event driven pattern
-- Saga pattern
-
-![Alt text](./doc/images/gcp.svg)
