@@ -1,19 +1,26 @@
 ## [WIP]Fishapp
 
-### About
+### 【概要】
 
 釣りに一緒に行く人を探せるアプリです。掲示板形式で、釣り場所や魚種や時間を指定して一緒に行く人を募集できます。マッチング後、当日について参加者同士でチャットができます。
 
 釣りをしたいけどやり方がわからない、一歩を踏み出せない人と、経験者だけど誰かと一緒に釣りしたい！って人をマッチングできたらいいなと思い作りました。
 
-### Application
+### 【アプリ】
 Cloud NativeやMicroservicesに興味を持ち勉強のために取り入れてみました。友達と共同開発し友達はフロント、僕はサーバー、インフラを担当しています(開発中)。
 
 api-gateway, user, chat, image, relaylogのマイクロサービスがあり、api-gatewayをGraphQLで実装し、他のマイクロサービスにプロキシしています。
 
 protobufやGraphQLのスキーマは[schema](/schema/README.md)にあり、バックエンドは全てGolangでClean Architectureで実装しています。
 
-### Infrastructure
+### 【DB設計】
+tblsで自動生成しています。
+[post-db](/microservices/post/db/README.md)
+[user-db](/microservices/user/db/README.md)
+[chat-db](/microservices/chat/db/README.md)
+[image-db](/microservices/image/db/README.md)
+
+### 【インフラ】
 
 GCPのGKEを使用しています。TerraformでGKEクラスター、サービスアカウントなどを作成しています。
 
@@ -21,7 +28,7 @@ GCPのConfig Connectorで、アプリケーションが使うGCPリソースをK
 
 本番のMySQL, Redis, NatsにKubernetes Operatorを使っており、イメージのビルド、プッシュ、terraformやk8sのマニフェストの適用は、Github Actions上で行っています。secretはローカルでkubesecで暗号化し、Github Actions上で復号化しています。また、スキーマドキュメントの生成などもGithub Actionsで行っています。
 
-## Technology
+## 【使用技術】
 
 - アプリケーション
   - Golang
