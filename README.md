@@ -32,7 +32,7 @@ GCPのConfig Connectorで、アプリケーションが使うGCPリソースをK
 
 本番のMySQL, Redis, NatsにKubernetes Operatorを使っており、イメージのビルド、プッシュ、terraformやk8sのマニフェストの適用は、Github Actions上で行っています。secretはローカルでkubesecで暗号化し、Github Actions上で復号化しています。また、スキーマドキュメントの生成などもGithub Actionsで行っています。
 
-## 【使用技術】
+### 【使用技術】
 
 - アプリケーション
   - Golang
