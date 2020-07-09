@@ -10,7 +10,7 @@ make stop
 
 ## skaffold始め方
 ```bash
-make stop
+make dev
 ```
 青文字でDeployments stabilized in ~　と出るまで待つ。
 ## skaffold終わり方
