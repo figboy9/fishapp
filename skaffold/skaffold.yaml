@@ -56,13 +56,13 @@ build:
 
   - image: api-gateway
     context: ../microservices/api-gateway
-    sync:
-      manual:
-        - src: '**/*'
-          dest: /app
+    # sync:
+    #   manual:
+    #     - src: '**/*'
+    #       dest: /app
     docker:
       dockerfile: Dockerfile.dev
-      target: hot-reload
+      # target: hot-reload
 
 deploy:
   kubectl:
