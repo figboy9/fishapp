@@ -3,8 +3,7 @@ GCP_KUBECTL_KEY = ~/.ssh/gcp/fishapp/kubectl.json
 GCP_PROJECT = fishapp-282106
 GCP_ZONE = asia-northeast1-a
 GCP_CLUSTER = fishapp-cluster
-INSTANCE_CONNECTION_NAME = fishapp-282106:asia-northeast1:user-db
-
+INSTANCE_CONNECTION_NAME = fishapp-282106:asia-northeast1:sample-mysql3
 
 terra:
 	docker run -it --rm --name terra --entrypoint sh -w /terraform \
