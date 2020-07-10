@@ -20,15 +20,3 @@ spec:
   mysqlConf:
     character-set-server: utf8mb4
     collation-server: utf8mb4_unicode_ci
-# ---
-# apiVersion: sql.cnrm.cloud.google.com/v1beta1
-# kind: SQLInstance
-# metadata:
-#   name: sample-mysql3
-# spec:
-#   databaseVersion: MYSQL_5_7
-#   region: asia-northeast1
-#   settings:
-#     tier: db-f1-micro
-#   rootPassword:
-#     value: G8XhBRChd2NEJxqr

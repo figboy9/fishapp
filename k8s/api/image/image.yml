@@ -38,7 +38,7 @@ spec:
         
       - name: migration
         image: migrate/migrate
-        args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp-image/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(image-db-mysql-master:3306)/$(DB_NAME)", "up"]
+        args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp/microservices/image/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(image-db-mysql-master:3306)/$(DB_NAME)", "up"]
         env:
         - name: DB_PASS
           valueFrom:
