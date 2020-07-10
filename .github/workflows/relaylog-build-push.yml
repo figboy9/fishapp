@@ -4,7 +4,9 @@ on:
   push:
     paths:
     - 'microservices/relaylog/**.go'
-    - 'microservices/relaylog/**/conf.yml'
+    - 'microservices/relaylog/conf/conf.yml'
+    - 'microservices/relaylog/go.mod'
+    - 'microservices/relaylog/go.sum'
     branches:
     - master
 

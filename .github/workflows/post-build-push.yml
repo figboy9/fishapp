@@ -4,7 +4,9 @@ on:
   push:
     paths:
     - 'microservices/post/**.go'
-    - 'microservices/post/**/conf.yml'
+    - 'microservices/post/conf/conf.yml'
+    - 'microservices/post/go.mod'
+    - 'microservices/post/go.sum'
     branches:
     - master
 

@@ -4,8 +4,10 @@ on:
   push:
     paths:
     - 'microservices/api-gateway/**.go'
-    - 'microservices/api-gateway/**/conf.yml'
-    - 'microservices/api-gateway/**/healthcheck.sh'
+    - 'microservices/api-gateway/conf/conf.yml'
+    - 'microservices/api-gateway/healthcheck.sh'
+    - 'microservices/api-gateway/go.mod'
+    - 'microservices/api-gateway/go.sum'
     branches:
     - master
 
