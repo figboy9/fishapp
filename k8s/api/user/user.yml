@@ -27,18 +27,18 @@ spec:
       labels:
         app: user
     spec:
-      volumes:
-      - name: google-cloud-key
-        secret:
-          secretName: fishapp-user-api-account-key
+      # volumes:
+      # - name: google-cloud-key
+      #   secret:
+      #     secretName: fishapp-user-api-account-key
       initContainers:
       - name: init-user-db
         image: busybox
-        command: ['sh', '-c', "until nslookup 34.84.191.77.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for myservice; sleep 2; done"]
+        command: ['sh', '-c', "until nslookup user-db-mysql-master; do echo waiting for myservice; sleep 2; done"]
 
       - name: migration
         image: migrate/migrate
-        args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp-user/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(34.84.191.77:3306)/$(DB_NAME)", "up"]
+        args: ["-source", "github://ezio1119:$(GITHUB_TOKEN)@ezio1119/fishapp/microservices/user/db/sql", "-database", "mysql://root:$(DB_PASS)@tcp(user-db-mysql-master:3306)/$(DB_NAME)", "up"]
         env:
         - name: DB_PASS
           valueFrom:
@@ -47,11 +47,10 @@ spec:
               key: ROOT_PASSWORD
 
         - name: DB_NAME
-          value: user-db
-          # valueFrom:
-          #   secretKeyRef:
-          #     name: user-db-secret
-          #     key: DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: user-db-secret
+              key: DATABASE
 
         - name: GITHUB_TOKEN
           valueFrom:
@@ -88,7 +87,7 @@ spec:
               key: debug
 
         - name: DB_HOST
-          value: localhost
+          value: user-db-mysql
 
         - name: DB_PASS
           valueFrom:
@@ -123,15 +122,15 @@ spec:
               name: user-secret
               key: jwt.public.key
   
-      - name: cloud-sql-proxy
-        image: gcr.io/cloudsql-docker/gce-proxy:1.17
-        command:
-          - "/cloud_sql_proxy"
-          - "-instances=fishapp-282106:asia-northeast1:sample-mysql=tcp:3306"
-          - "-credential_file=/var/secrets/google/key.json"
-        securityContext:
-          runAsNonRoot: true
-        volumeMounts:
-        - name: google-cloud-key
-          mountPath: /var/secrets/google
-          readOnly: true
+      # - name: cloud-sql-proxy
+      #   image: gcr.io/cloudsql-docker/gce-proxy:1.17
+      #   command:
+      #     - "/cloud_sql_proxy"
+      #     - "-instances=fishapp-282106:asia-northeast1:sample-mysql4=tcp:3306"
+      #     - "-credential_file=/var/secrets/google/key.json"
+      #   securityContext:
+      #     runAsNonRoot: true
+      #   volumeMounts:
+      #   - name: google-cloud-key
+      #     mountPath: /var/secrets/google
+      #     readOnly: true
