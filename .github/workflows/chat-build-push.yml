@@ -4,7 +4,9 @@ on:
   push:
     paths:
     - 'microservices/chat/**.go'
-    - 'microservices/chat/**/conf.yml'
+    - 'microservices/chat/conf/conf.yml'
+    - 'microservices/chat/go.mod'
+    - 'microservices/chat/go.sum'
     branches:
     - master
 
