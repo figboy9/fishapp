@@ -67,7 +67,7 @@ build:
 deploy:
   kubectl:
     manifests:
-    - volumes/*.yml
+    # - volumes/*.yml
     - middleware/nats/*.yml
     - api/*.yml
   helm:

@@ -1398,6 +1398,7 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type UserServiceClient interface {
+	// id_tokenを検証しUserを取得。emailフィールドも含まれる。
 	CurrentUser(ctx context.Context, in *CurrentUserReq, opts ...grpc.CallOption) (*User, error)
 	GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*User, error)
 	CreateUser(ctx context.Context, opts ...grpc.CallOption) (UserService_CreateUserClient, error)
@@ -1405,6 +1406,7 @@ type UserServiceClient interface {
 	UpdatePassword(ctx context.Context, in *UpdatePasswordReq, opts ...grpc.CallOption) (*empty.Empty, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginRes, error)
 	Logout(ctx context.Context, in *LogoutReq, opts ...grpc.CallOption) (*empty.Empty, error)
+	// トークンを更新する。 refresh_tokenが必要。古いrefresh_tokenはブラックリストに登録。
 	RefreshIDToken(ctx context.Context, in *RefreshIDTokenReq, opts ...grpc.CallOption) (*RefreshIDTokenRes, error)
 }
 
@@ -1540,6 +1542,7 @@ func (c *userServiceClient) RefreshIDToken(ctx context.Context, in *RefreshIDTok
 
 // UserServiceServer is the server API for UserService service.
 type UserServiceServer interface {
+	// id_tokenを検証しUserを取得。emailフィールドも含まれる。
 	CurrentUser(context.Context, *CurrentUserReq) (*User, error)
 	GetUser(context.Context, *GetUserReq) (*User, error)
 	CreateUser(UserService_CreateUserServer) error
@@ -1547,6 +1550,7 @@ type UserServiceServer interface {
 	UpdatePassword(context.Context, *UpdatePasswordReq) (*empty.Empty, error)
 	Login(context.Context, *LoginReq) (*LoginRes, error)
 	Logout(context.Context, *LogoutReq) (*empty.Empty, error)
+	// トークンを更新する。 refresh_tokenが必要。古いrefresh_tokenはブラックリストに登録。
 	RefreshIDToken(context.Context, *RefreshIDTokenReq) (*RefreshIDTokenRes, error)
 }
 

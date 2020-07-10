@@ -931,10 +931,17 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ImageServiceClient interface {
+	// owner_id, owner_typeに紐づくImageの一覧を取得
 	ListImagesByOwnerID(ctx context.Context, in *ListImagesByOwnerIDReq, opts ...grpc.CallOption) (*ListImagesByOwnerIDRes, error)
+	// ImageInfo, chunkのどちらかをストリームで受け取る。
+	// ImageInfoが送られて来たら、次のイメージと判断。
 	BatchCreateImages(ctx context.Context, opts ...grpc.CallOption) (ImageService_BatchCreateImagesClient, error)
+	// ImageのIDの配列を受け取り、全て削除する
+	// 削除するレコードがなくてもエラーなし
 	BatchDeleteImages(ctx context.Context, in *BatchDeleteImagesReq, opts ...grpc.CallOption) (*empty.Empty, error)
+	// owner_idを配列, owner_typeを受け取り、紐づくImageを全て削除。
 	BatchDeleteImagesByOwnerIDs(ctx context.Context, in *BatchDeleteImagesByOwnerIDsReq, opts ...grpc.CallOption) (*empty.Empty, error)
+	// owner_id, owner_typeに紐づくImageを削除。
 	DeleteImagesByOwnerID(ctx context.Context, in *DeleteImagesByOwnerIDReq, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
@@ -1018,10 +1025,17 @@ func (c *imageServiceClient) DeleteImagesByOwnerID(ctx context.Context, in *Dele
 
 // ImageServiceServer is the server API for ImageService service.
 type ImageServiceServer interface {
+	// owner_id, owner_typeに紐づくImageの一覧を取得
 	ListImagesByOwnerID(context.Context, *ListImagesByOwnerIDReq) (*ListImagesByOwnerIDRes, error)
+	// ImageInfo, chunkのどちらかをストリームで受け取る。
+	// ImageInfoが送られて来たら、次のイメージと判断。
 	BatchCreateImages(ImageService_BatchCreateImagesServer) error
+	// ImageのIDの配列を受け取り、全て削除する
+	// 削除するレコードがなくてもエラーなし
 	BatchDeleteImages(context.Context, *BatchDeleteImagesReq) (*empty.Empty, error)
+	// owner_idを配列, owner_typeを受け取り、紐づくImageを全て削除。
 	BatchDeleteImagesByOwnerIDs(context.Context, *BatchDeleteImagesByOwnerIDsReq) (*empty.Empty, error)
+	// owner_id, owner_typeに紐づくImageを削除。
 	DeleteImagesByOwnerID(context.Context, *DeleteImagesByOwnerIDReq) (*empty.Empty, error)
 }
 

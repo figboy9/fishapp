@@ -8,5 +8,5 @@ configurationFiles:
     server-id=1
 mysqlDatabase: chat_DB
 mysqlRootPassword: password
-persistence:
-  existingClaim: chat-db-pvc
+# persistence:
+#   existingClaim: chat-db-pvc

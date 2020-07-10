@@ -8,5 +8,5 @@ configurationFiles:
     server-id=1
 mysqlDatabase: post_DB
 mysqlRootPassword: password
-persistence:
-  existingClaim: post-db-pvc
+# persistence:
+#   existingClaim: post-db-pvc

@@ -5,5 +5,5 @@ configurationFiles:
     collation-server=utf8mb4_unicode_ci
 mysqlDatabase: image_DB
 mysqlRootPassword: password
-persistence:
-  existingClaim: image-db-pvc
+# persistence:
+#   existingClaim: image-db-pvc

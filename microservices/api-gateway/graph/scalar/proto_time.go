@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/ezio1119/fishapp-api-gateway/conf"
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/timestamp"
 
@@ -15,7 +16,7 @@ import (
 func MarshalTimeProto(protoT timestamp.Timestamp) graphql.Marshaler {
 	t, _ := ptypes.Timestamp(&protoT)
 	return graphql.WriterFunc(func(w io.Writer) {
-		io.WriteString(w, strconv.Quote(t.In(time.Local).Format(time.RFC3339)))
+		io.WriteString(w, strconv.Quote(t.In(conf.C.Sv.ClientLocation).Format(time.RFC3339)))
 	})
 }
 
@@ -25,7 +26,12 @@ func UnmarshalTimeProto(v interface{}) (timestamp.Timestamp, error) {
 		if err != nil {
 			return timestamp.Timestamp{}, err
 		}
-		a, _ := ptypes.TimestampProto(t)
+
+		a, err := ptypes.TimestampProto(t)
+		if err != nil {
+			return timestamp.Timestamp{}, err
+		}
+
 		return *a, nil
 	}
 	return timestamp.Timestamp{}, errors.New("time should be RFC3339 formatted string")
