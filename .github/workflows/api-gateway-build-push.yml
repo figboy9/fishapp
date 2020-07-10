@@ -5,6 +5,7 @@ on:
     paths:
     - 'microservices/api-gateway/**.go'
     - 'microservices/api-gateway/**/conf.yml'
+    - 'microservices/api-gateway/**/healthcheck.sh'
     branches:
     - master
 
