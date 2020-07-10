@@ -5,6 +5,7 @@ on:
     paths:
     - 'microservices/user/**.go'
     - 'microservices/user/conf/conf.yml'
+    - 'microservices/user/Dockerfile'
     - 'microservices/user/go.mod'
     - 'microservices/user/go.sum'
     branches:

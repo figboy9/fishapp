@@ -5,6 +5,7 @@ on:
     paths:
     - 'microservices/relaylog/**.go'
     - 'microservices/relaylog/conf/conf.yml'
+    - 'microservices/relaylog/Dockerfile'
     - 'microservices/relaylog/go.mod'
     - 'microservices/relaylog/go.sum'
     branches:

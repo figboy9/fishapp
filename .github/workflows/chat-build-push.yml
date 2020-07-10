@@ -5,6 +5,7 @@ on:
     paths:
     - 'microservices/chat/**.go'
     - 'microservices/chat/conf/conf.yml'
+    - 'microservices/chat/Dockerfile'
     - 'microservices/chat/go.mod'
     - 'microservices/chat/go.sum'
     branches:
