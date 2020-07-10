@@ -6,6 +6,7 @@ on:
     - 'microservices/api-gateway/**.go'
     - 'microservices/api-gateway/conf/conf.yml'
     - 'microservices/api-gateway/healthcheck.sh'
+    - 'microservices/api-gateway/Dockerfile'
     - 'microservices/api-gateway/go.mod'
     - 'microservices/api-gateway/go.sum'
     branches:
