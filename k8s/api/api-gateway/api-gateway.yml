@@ -51,7 +51,7 @@ spec:
 
       containers:
       - name: api-gateway
-        image: asia.gcr.io/fishapp-282106/api-gateway@sha256:91f4129d75945f3b5b297ac2617cc5f60715c303e75a135cfc75ba361c4c041b
+        image: asia.gcr.io/fishapp-282106/api-gateway@sha256:016d7ae31a9693a3871c466eab6e97572d7bc58fb97799f6d0fabc7c8f1739e0
         readinessProbe:
           exec:
             command: ['sh', '-c', "/healthcheck.sh"]
