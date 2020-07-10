@@ -5,5 +5,5 @@ configurationFiles:
     collation-server=utf8mb4_unicode_ci
 mysqlDatabase: user_DB
 mysqlRootPassword: password
-persistence:
-  existingClaim: user-db-pvc
+# persistence:
+#   existingClaim: user-db-pvc

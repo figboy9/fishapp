@@ -9,7 +9,6 @@ proto:
 	-I/proto \
 	-I/go/src/github.com/envoyproxy/protoc-gen-validate \
 	--go_out=plugins=grpc:/pb \
-	--validate_out="lang=go:/pb" \
 	chat.proto post.proto user.proto image.proto event.proto
 
 gql:

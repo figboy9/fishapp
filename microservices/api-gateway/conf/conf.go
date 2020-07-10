@@ -3,6 +3,7 @@ package conf
 import (
 	"log"
 	"strings"
+	"time"
 
 	"github.com/davecgh/go-spew/spew"
 	"github.com/spf13/viper"
@@ -10,10 +11,12 @@ import (
 
 type config struct {
 	Sv struct {
-		Timeout       int64
-		Port          string
-		Debug         bool
-		ChunkDataSize int
+		Timeout        int64
+		Port           string
+		Debug          bool
+		ChunkDataSize  int
+		ClientTimezone string
+		ClientLocation *time.Location
 	}
 	API struct {
 		PostURL  string `mapstructure:"post_url"`
@@ -51,12 +54,20 @@ func init() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	if err := viper.Unmarshal(&C); err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
+	l, err := time.LoadLocation(C.Sv.ClientTimezone)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	C.Sv.ClientLocation = l
+
 	spew.Dump(C)
+
 }

@@ -26,10 +26,10 @@ spec:
       labels:
         app: nats-streaming
     spec:
-      volumes:
-      - name: nats-streaming-vol
-        persistentVolumeClaim:
-          claimName: nats-streaming-pvc
+      # volumes:
+      # - name: nats-streaming-vol
+      #   persistentVolumeClaim:
+      #     claimName: nats-streaming-pvc
       
       containers:
       - name: nats-streaming
@@ -37,6 +37,6 @@ spec:
         ports:
         - containerPort: 4222
         args: ["-p", "4222", "-m", "8222", "-cid", "fishapp-cluster", "-st", "FILE", "--dir", "/data"]
-        volumeMounts:
-        - name: nats-streaming-vol
-          mountPath: /data
+        # volumeMounts:
+        # - name: nats-streaming-vol
+        #   mountPath: /data
