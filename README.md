@@ -13,6 +13,8 @@ Cloud NativeやMicroservicesに興味を持ち勉強のために取り入れて�
 
 GraphQLのPlaygroundを公開しており、見てみたい方はBasic認証のユーザー名とパスワードを送るので、ツイッターにDMをお願いいたします。
 
+![Alt text](./doc/images/playground.png)
+
 Twitter: @hayashi00000000
 
 URL: https://fishapp.work/playground
