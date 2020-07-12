@@ -4,6 +4,8 @@ metadata:
   name: fishapp-ingress
   annotations:
     kubernetes.io/ingress.global-static-ip-name: fishapp-external-address # terraformで作成
+    networking.gke.io/managed-certificates: fishapp-certificate
+    kubernetes.io/ingress.allow-http: "false"
 spec:
   rules:
   - http:
@@ -16,3 +18,11 @@ spec:
         backend:
           serviceName: api-gateway
           servicePort: 8080
+---
+apiVersion: networking.gke.io/v1beta2
+kind: ManagedCertificate
+metadata:
+  name: fishapp-certificate
+spec:
+  domains:
+  - fishapp.work
