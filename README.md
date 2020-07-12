@@ -11,13 +11,18 @@
 ### 【アプリ】
 Cloud NativeやMicroservicesに興味を持ち勉強のために取り入れてみました。友達と共同開発し友達はフロント、僕はサーバー、インフラを担当しています。現在、フロントが未完成なのでサイトはありませんが、APIはデプロイ済みです。
 
+GraphQLのPlaygroundを公開しており、見てみたい方はBasic認証のユーザー名とパスワードを送るので、ツイッターにDMをお願いいたします。
+
+Twitter: @hayashi00000000
+
+URL: https://fishapp.work/playground
+
 api-gateway, user, chat, image, relaylogのマイクロサービスがあり、api-gatewayをGraphQLで実装し、他のマイクロサービスにプロキシしています。
 
 protobufやGraphQLのスキーマは[schema](/schema/README.md)にあり、バックエンドは全てGolangでClean Architectureで実装しています。
 
 ### 【DB設計】
 tblsというOSSで自動生成しています。
-
 https://github.com/k1LoW/tbls
 
 [post-db](/microservices/post/db/README.md)
