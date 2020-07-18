@@ -61,6 +61,9 @@ exec:
 logs:
 	docker logs -f --tail 100 $(PJT_NAME)_$(SVC)_1
 
+klogs:
+	kubectl logs -f -l app=$(SVC)
+
 dblogs:
 	docker logs -f --tail 100 $(PJT_NAME)_$(DB_SVC)_1
 

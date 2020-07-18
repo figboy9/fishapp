@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/davecgh/go-spew/spew"
@@ -66,6 +67,7 @@ func init() {
 	if err := viper.Unmarshal(&C); err != nil {
 		panic(err)
 	}
+	fmt.Println("saa")
 
 	spew.Dump(C)
 }
