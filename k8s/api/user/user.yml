@@ -68,7 +68,7 @@ spec:
 
       containers:
       - name: user
-        image: asia.gcr.io/fishapp-282106/user@sha256:ca08769b5468db74538532dde7868e02bbd536dca31224e0203d3651ff961025
+        image: asia.gcr.io/fishapp-282106/user@sha256:1403ac4901c36e841cb3cd0e9737bf5d11f3349944dae1694d37f5f463ce6158
         ports:
         - containerPort: 50051
         readinessProbe:
