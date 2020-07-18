@@ -32,6 +32,3 @@ spec:
         image: api-gateway
         ports:
         - containerPort: 8080
-        # env:
-        # - name: TZ
-        #   value: Asia/Tokyo

@@ -40,7 +40,7 @@ func genToken(userID string, sub string, expSec int64) (string, error) {
 			ExpiresAt: expTime.Unix(),
 		},
 	}
-	t := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	t := jwt.NewWithClaims(jwt.SigningMethodES512, claims)
 	return t.SignedString(privateKey)
 }
 

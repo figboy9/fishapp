@@ -10,9 +10,6 @@ addrepo:
 	
 dev:
 	skaffold dev --port-forward
-
-rmdata:
-	minikube ssh "sudo rm -rf /data/"
 	kubectl delete pvc \
 	redis-data-blacklist-kvs-redis-master-0 \
 	redis-data-chat-kvs-redis-master-0

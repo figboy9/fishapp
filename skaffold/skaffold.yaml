@@ -6,13 +6,13 @@ build:
   artifacts:
   - image: user
     context: ../microservices/user
-    # sync:
-    #   manual:
-    #     - src: '**/*'
-    #       dest: /app
+    sync:
+      manual:
+        - src: '**/*'
+          dest: /app
     docker:
       dockerfile: Dockerfile.dev
-      # target: hot-reload
+      target: hot-reload
 
   - image: chat
     context: ../microservices/chat
