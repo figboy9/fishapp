@@ -11,7 +11,9 @@
 ### 【アプリ】
 Cloud NativeやMicroservicesに興味を持ち勉強のために取り入れてみました。友達と共同開発し友達はフロント、僕はサーバー、インフラを担当しています。現在、フロントが未完成なのでサイトはありませんが、APIはデプロイ済みです。
 
-GraphQLのPlaygroundを公開しており、見てみたい方はBasic認証のユーザー名とパスワードを送るので、ツイッターにDMをお願いいたします。
+~~GraphQLのPlaygroundを公開しており、見てみたい方はBasic認証のユーザー名とパスワードを送るので、ツイッターにDMをお願いいたします。~~
+
+GKE高いので消しました。
 
 ![Alt text](./doc/images/playground.png)
 
